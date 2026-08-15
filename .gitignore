@@ -1,0 +1,17 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+*~
+*.swp
+.idea/
+.vscode/
+
+# Runtime / local only (measurement data lives under /var/lib/oppetid in prod)
+**/node_modules/
+**/*.log
+**/data/*.json
+!**/data/.gitkeep
+
+# Optional local env
+.env
+.env.*

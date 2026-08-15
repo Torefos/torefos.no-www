@@ -1,0 +1,13 @@
+{
+  "name": "ikt-agder-oppetid",
+  "version": "1.0.0",
+  "description": "Kontinuerlig maaling av nettverksstabilitet mot intern server. Ingen avhengigheter.",
+  "private": true,
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

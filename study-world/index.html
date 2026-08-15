@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Tores dag — en levende studieverden</title>
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<canvas id="world"></canvas>
+
+<!-- Øverst til venstre: sted og aktivitet -->
+<div class="hud hud-place" id="hudPlace">
+  <div class="place-name" id="placeName">Smååsane, Vennesla</div>
+  <div class="activity" id="activityName">Sover</div>
+  <div class="activity-sub" id="activitySub"></div>
+</div>
+
+<!-- Øverst til høyre: klokke -->
+<div class="hud hud-clock">
+  <div class="clock" id="clock">00:00</div>
+  <div class="clock-sub" id="clockSub">neste: —</div>
+</div>
+
+<!-- Nederst: playeren -->
+<div class="hud dock" id="dock">
+  <button class="icon-btn play" id="btnPlay" title="Spill av / pause" aria-label="Spill av">
+    <svg viewBox="0 0 24 24" class="i-play"><path d="M8 5v14l11-7z"/></svg>
+    <svg viewBox="0 0 24 24" class="i-pause"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+  </button>
+
+  <div class="track">
+    <div class="track-title" id="trackTitle">Ingen strøm lastet</div>
+    <div class="track-sub" id="trackSub">Trykk play for å starte</div>
+  </div>
+
+  <button class="icon-btn small" id="btnPrev" title="Forrige" aria-label="Forrige">
+    <svg viewBox="0 0 24 24"><path d="M7 6h2v12H7zm3 6l8-6v12z"/></svg>
+  </button>
+  <button class="icon-btn small" id="btnNext" title="Neste" aria-label="Neste">
+    <svg viewBox="0 0 24 24"><path d="M15 6h2v12h-2zM6 6l8 6-8 6z"/></svg>
+  </button>
+
+  <div class="vol">
+    <svg viewBox="0 0 24 24" class="vol-icon"><path d="M4 9v6h4l5 4V5L8 9H4zm12.5 3a4 4 0 00-2.2-3.6v7.2A4 4 0 0016.5 12z"/></svg>
+    <input type="range" id="vol" min="0" max="100" value="45" aria-label="Volum" />
+  </div>
+
+  <button class="icon-btn small" id="btnSettings" title="Innstillinger" aria-label="Innstillinger">
+    <svg viewBox="0 0 24 24"><path d="M12 8a4 4 0 100 8 4 4 0 000-8zm9 4l2 1.6-1.6 2.8-2.4-.8a7.6 7.6 0 01-1.7 1l-.4 2.5h-3.2l-.4-2.5a7.6 7.6 0 01-1.7-1l-2.4.8L5.6 13.6 7.6 12l-2-1.6 1.6-2.8 2.4.8a7.6 7.6 0 011.7-1L11.7 5h3.2l.4 2.4a7.6 7.6 0 011.7 1l2.4-.8 1.6 2.8L21 12z"/></svg>
+  </button>
+  <button class="icon-btn small" id="btnFull" title="Fullskjerm" aria-label="Fullskjerm">
+    <svg viewBox="0 0 24 24"><path d="M4 9V4h5v2H6v3H4zm11-5h5v5h-2V6h-3V4zM4 15h2v3h3v2H4v-5zm14 3v-3h2v5h-5v-2h3z"/></svg>
+  </button>
+</div>
+
+<!-- Innstillingspanel -->
+<div class="panel" id="panel" hidden>
+  <div class="panel-head">
+    <h2>Innstillinger</h2>
+    <button class="close" id="btnClose" aria-label="Lukk">&times;</button>
+  </div>
+
+  <section>
+    <h3>Tid</h3>
+    <label class="row">
+      <input type="checkbox" id="useRealTime" checked />
+      <span>Følg ekte klokkeslett</span>
+    </label>
+    <div class="row slider-row">
+      <input type="range" id="timeSlider" min="0" max="1439" value="0" />
+      <output id="timeOut">00:00</output>
+    </div>
+    <p class="hint">Skru av «ekte klokkeslett» for å skrubbe gjennom døgnet og se alle scenene.</p>
+  </section>
+
+  <section>
+    <h3>Lyd</h3>
+    <label class="row col">
+      <span>Egen YouTube-lenke eller video-ID</span>
+      <input type="text" id="customUrl" placeholder="https://www.youtube.com/watch?v=…" />
+    </label>
+    <button class="btn" id="btnLoadUrl">Last inn</button>
+    <p class="hint">Noen strømmer tillater ikke innbygging. Får du feil, prøv en annen lenke.</p>
+  </section>
+
+  <section>
+    <h3>Visning</h3>
+    <label class="row"><input type="checkbox" id="optParallax" checked /><span>Parallakse med musa</span></label>
+    <label class="row"><input type="checkbox" id="optParticles" checked /><span>Partikler i lufta</span></label>
+    <label class="row"><input type="checkbox" id="optHud" checked /><span>Vis tekst-overlegg</span></label>
+    <label class="row"><input type="checkbox" id="optVignette" checked /><span>Vignett og filmkorn</span></label>
+    <div class="row slider-row">
+      <span class="lbl">Zoom</span>
+      <input type="range" id="optZoom" min="70" max="160" value="100" />
+      <output id="zoomOut">1.00×</output>
+    </div>
+  </section>
+
+  <section>
+    <h3>Dagsplan</h3>
+    <ul class="plan" id="planList"></ul>
+  </section>
+</div>
+
+<!-- Skjult YouTube-spiller -->
+<div id="ytHost"><div id="ytPlayer"></div></div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

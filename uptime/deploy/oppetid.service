@@ -1,0 +1,31 @@
+# /etc/systemd/system/oppetid.service
+#
+#   systemctl daemon-reload
+#   systemctl enable --now oppetid
+#   journalctl -u oppetid -f
+
+[Unit]
+Description=IKT Agder Oppetid - backend for linjemåling
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/oppetid
+ExecStart=/usr/bin/node /var/www/oppetid/server/server.js
+Environment=PORT=8080
+Environment=HOST=127.0.0.1
+Environment=DATA_FILE=/var/lib/oppetid/tester.json
+# nginx serverer public/ direkte, så backend trenger ikke gjøre det:
+Environment=SERVE_STATIC=0
+Restart=always
+RestartSec=2
+StateDirectory=oppetid
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target

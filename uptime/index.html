@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="nb" data-tema="lys">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Oppetid · torefos.no</title>
+<meta name="description" content="Kontinuerlig måling av nettverksstabilitet mot serveren. Linjemåling for felt og lab.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%230A2E62'/%3E%3Cpath d='M3 11h1.6V7H3zm3-1h1.6V5H6zm3 3h1.6V4H9zm3-2h1.6V6H12z' fill='%23276efa'/%3E%3C/svg%3E">
+</head>
+<body>
+
+<header class="topp">
+  <a class="merke" href="/uptime/">
+    <span class="merke-mark">UP</span>
+    <span class="merke-tekst">
+      <h1>opp<span>etid</span></h1>
+      <span class="undertittel">linjemåling · torefos.no</span>
+    </span>
+  </a>
+  <div class="topp-hoyre">
+    <span class="klokke" id="klokke">--:--:--</span>
+    <a class="nav-lenke" href="/">← lab</a>
+    <a class="nav-lenke" href="/tshoot/">tshoot</a>
+    <button class="tema-bryter" id="temaBryter" type="button" aria-pressed="false">
+      <svg id="temaIkon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="4"></circle>
+        <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+      </svg>
+      <span id="temaTekst">Mørk</span>
+    </button>
+  </div>
+</header>
+
+<main class="skall">
+
+  <section class="start" aria-label="Start ny måling">
+    <div class="felt">
+      <label for="navnFelt">Navn på måling</label>
+      <input type="text" id="navnFelt" placeholder="f.eks. Rådhuset 3. etg" maxlength="60"
+             autocomplete="off" spellcheck="false">
+    </div>
+    <div class="felt-knapp">
+      <button class="knapp-primær" id="startKnapp" type="button">Start måling</button>
+    </div>
+    <p class="hint">
+      Målingen får en kort tilfeldig kode i tillegg til navnet, slik at
+      <code>rådhuset-3etg-k4t9</code> alltid er unik. Koden lagres i denne nettleseren –
+      lukker du fanen og kommer tilbake, fortsetter målingen der den slapp.
+    </p>
+  </section>
+
+  <h2 class="seksjon-tittel">Mine målinger</h2>
+  <div id="mine"></div>
+  <div class="tomt" id="mineTomt">
+    <strong>Ingen måling kjører fra denne maskinen</strong>
+    Gi målingen et navn over og trykk Start for å begynne å samle data.
+  </div>
+
+  <h2 class="seksjon-tittel">Andre målinger som kjører nå</h2>
+  <div id="andre"></div>
+  <div class="tomt" id="andreTomt">
+    Ingen andre maskiner måler akkurat nå.
+  </div>
+
+  <h2 class="seksjon-tittel">Testhistorikk</h2>
+  <p class="hint" style="margin-top:-6px;margin-bottom:12px;">
+    Stoppede og tidligere målinger på serveren (siste <span id="histMaksTekst">20</span>).
+    Last ned JSON/CSV når du vil. Eldre rader ryddes automatisk (maks antall + serverens 7-dagers lagring).
+  </p>
+  <div id="historikk"></div>
+  <div class="tomt" id="historikkTomt">
+    Ingen lagret testhistorikk ennå. Stopp en måling, så dukker den opp her.
+  </div>
+
+  <footer class="bunn">
+    Hvert sekund sendes et lite ekkokall over WebSocket, og hvert tredje sekund lastes
+    <code>/uptime/health</code> på nytt. Grønn stolpe = svar, høyden viser svartid.
+    Rød stolpe under nullinjen = ingen svar innen tidsfristen.
+    Data ligger på serveren i sju dager.
+    · <a href="/">torefos.no lab</a>
+  </footer>
+</main>
+
+<div class="tips" id="tips" role="tooltip" aria-hidden="true"></div>
+
+<script src="app.js?v=5"></script>
+</body>
+</html>

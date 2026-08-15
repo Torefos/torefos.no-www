@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ecoplan — torefos.no</title>
+  <meta name="description" content="Enkel, visuell økonomioversikt for studenter: inntekt, utgifter, lån og sparing (fond, rentefond, gull, bitcoin).">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0f0e;
+      --bg-elev: #121816;
+      --bg-card: #151c19;
+      --border: #24302b;
+      --border-soft: #1a2420;
+      --text: #e8f0ec;
+      --muted: #8fa399;
+      --dim: #5c6f66;
+      --accent: #3dd68c;
+      --accent-dim: #2a9d66;
+      --accent-glow: rgba(61, 214, 140, 0.15);
+      --warn: #f5b942;
+      --danger: #f07178;
+      --info: #5bb8ff;
+      --fund: #5bb8ff;
+      --rentefond: #8b9cff;
+      --gull: #f5b942;
+      --btc: #f7931a;
+      --radius: 12px;
+      --shadow: 0 8px 32px rgba(0,0,0,0.35);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', system-ui, sans-serif;
+      line-height: 1.5;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 10% -10%, rgba(61,214,140,0.12), transparent 50%),
+        radial-gradient(ellipse 60% 40% at 90% 10%, rgba(247,147,26,0.06), transparent 45%),
+        linear-gradient(180deg, #0d1210 0%, var(--bg) 40%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .wrap { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 1.25rem 1rem 3rem; }
+
+    header {
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+      gap: 1rem; margin-bottom: 1.5rem; padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border-soft);
+    }
+    .brand { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: inherit; }
+    .brand-mark {
+      width: 40px; height: 40px; border-radius: 10px;
+      background: linear-gradient(145deg, #1a2e24, #0f1814);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 0.7rem; color: var(--accent);
+    }
+    .brand-text .name { font-weight: 700; font-size: 1.15rem; letter-spacing: -0.02em; }
+    .brand-text .name span { color: var(--accent); }
+    .brand-text .tag { font-size: 0.72rem; color: var(--dim); font-family: 'JetBrains Mono', monospace; }
+    .header-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .btn {
+      font-family: 'DM Sans', sans-serif; font-size: 0.82rem; font-weight: 500;
+      padding: 0.5rem 0.9rem; border-radius: 8px; border: 1px solid var(--border);
+      background: var(--bg-elev); color: var(--text); cursor: pointer;
+      transition: border-color 0.15s, background 0.15s, color 0.15s;
+    }
+    .btn:hover { border-color: var(--accent-dim); color: var(--accent); }
+    .btn.primary {
+      background: rgba(61,214,140,0.12); border-color: rgba(61,214,140,0.35); color: var(--accent);
+    }
+    .btn.primary:hover { background: rgba(61,214,140,0.2); }
+    .btn.ghost { background: transparent; color: var(--muted); }
+    .btn.link { text-decoration: none; display: inline-flex; align-items: center; }
+
+    /* Hero summary */
+    .hero {
+      display: grid; grid-template-columns: 1.2fr 1fr; gap: 1rem; margin-bottom: 1.25rem;
+    }
+    @media (max-width: 780px) { .hero { grid-template-columns: 1fr; } }
+    .card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 1.1rem 1.15rem; box-shadow: var(--shadow);
+    }
+    .card h2 {
+      font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em;
+      color: var(--dim); margin-bottom: 0.85rem; font-family: 'JetBrains Mono', monospace;
+    }
+    .balance-big {
+      font-size: clamp(1.8rem, 4vw, 2.4rem); font-weight: 700; letter-spacing: -0.03em;
+      font-family: 'JetBrains Mono', monospace; line-height: 1.15;
+    }
+    .balance-big.pos { color: var(--accent); }
+    .balance-big.neg { color: var(--danger); }
+    .balance-sub { margin-top: 0.35rem; font-size: 0.85rem; color: var(--muted); }
+    .pill-row { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-top: 1rem; }
+    .pill {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.68rem;
+      padding: 0.3rem 0.55rem; border-radius: 999px; border: 1px solid var(--border);
+      color: var(--muted); background: rgba(0,0,0,0.2);
+    }
+    .pill strong { color: var(--text); font-weight: 500; }
+
+    .bars { display: flex; flex-direction: column; gap: 0.75rem; }
+    .bar-row label {
+      display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--muted); margin-bottom: 0.3rem;
+    }
+    .bar-row label span:last-child { font-family: 'JetBrains Mono', monospace; color: var(--text); font-size: 0.75rem; }
+    .bar-track {
+      height: 10px; border-radius: 5px; background: var(--border-soft); overflow: hidden; display: flex;
+    }
+    .bar-fill { height: 100%; border-radius: 5px; transition: width 0.4s ease; min-width: 0; }
+    .bar-fill.income { background: linear-gradient(90deg, var(--accent-dim), var(--accent)); }
+    .bar-fill.expense { background: linear-gradient(90deg, #c45c63, var(--danger)); }
+    .bar-fill.save { background: linear-gradient(90deg, #3a7ab8, var(--fund)); }
+
+    /* Grid sections */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1rem; }
+    @media (max-width: 780px) {
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    }
+    @media (min-width: 781px) and (max-width: 960px) {
+      .grid-3 { grid-template-columns: 1fr 1fr; }
+    }
+
+    .section-head {
+      display: flex; align-items: baseline; justify-content: space-between; gap: 0.5rem;
+      margin-bottom: 0.85rem;
+    }
+    .section-head h2 { margin-bottom: 0; }
+    .section-head .sum {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--accent); font-weight: 600;
+    }
+    .section-head .sum.neg { color: var(--danger); }
+    .section-head .sum.muted { color: var(--muted); }
+
+    .fields { display: flex; flex-direction: column; gap: 0.65rem; }
+    .field label {
+      display: block; font-size: 0.72rem; color: var(--muted); margin-bottom: 0.25rem;
+      font-weight: 500;
+    }
+    .field .hint { font-size: 0.68rem; color: var(--dim); margin-top: 0.2rem; }
+    .input-wrap {
+      display: flex; align-items: center; gap: 0.4rem;
+      background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+      padding: 0 0.65rem; transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .input-wrap:focus-within {
+      border-color: rgba(61,214,140,0.45); box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+    .input-wrap .prefix, .input-wrap .suffix {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--dim); flex-shrink: 0;
+    }
+    .input-wrap input {
+      flex: 1; min-width: 0; border: none; background: transparent; color: var(--text);
+      font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; padding: 0.55rem 0; outline: none;
+    }
+    /* hide number spinners */
+    .input-wrap input[type=number]::-webkit-inner-spin-button,
+    .input-wrap input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    .input-wrap input[type=number] { -moz-appearance: textfield; appearance: textfield; }
+
+    .slider-row { margin-top: 0.15rem; }
+    .slider-row input[type=range] {
+      width: 100%; accent-color: var(--accent); height: 4px; cursor: pointer;
+    }
+
+    .split-list { display: flex; flex-direction: column; gap: 0.55rem; }
+    .split-item {
+      display: grid; grid-template-columns: 8px 1fr auto; gap: 0.55rem; align-items: center;
+      padding: 0.5rem 0.6rem; border-radius: 8px; background: rgba(0,0,0,0.18); border: 1px solid var(--border-soft);
+    }
+    .dot { width: 8px; height: 8px; border-radius: 50%; }
+    .split-item .lbl { font-size: 0.82rem; }
+    .split-item .sub { font-size: 0.68rem; color: var(--dim); font-family: 'JetBrains Mono', monospace; }
+    .split-item .amt { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; font-weight: 500; }
+
+    /* Savings assets */
+    .asset-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    @media (max-width: 520px) { .asset-grid { grid-template-columns: 1fr; } }
+    .asset {
+      border: 1px solid var(--border); border-radius: 10px; padding: 0.85rem;
+      background: rgba(0,0,0,0.15); position: relative; overflow: hidden;
+    }
+    .asset::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: var(--asset-c, var(--accent));
+    }
+    .asset-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.65rem; }
+    .asset-head h3 { font-size: 0.88rem; font-weight: 600; }
+    .asset-head .icon { font-size: 1.1rem; }
+    .asset .fields { gap: 0.5rem; }
+    .asset-foot {
+      margin-top: 0.65rem; padding-top: 0.55rem; border-top: 1px solid var(--border-soft);
+      font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--muted);
+      display: flex; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap;
+    }
+    .asset-foot strong { color: var(--text); }
+
+    /* Projection */
+    .proj-chart {
+      height: 180px; margin-top: 0.5rem; position: relative;
+      border-radius: 8px; background: rgba(0,0,0,0.2); border: 1px solid var(--border-soft);
+      overflow: hidden;
+    }
+    .proj-chart canvas { width: 100%; height: 100%; display: block; }
+    .proj-legend {
+      display: flex; flex-wrap: wrap; gap: 0.65rem; margin-top: 0.75rem;
+      font-size: 0.72rem; color: var(--muted);
+    }
+    .proj-legend i {
+      display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 0.3rem; vertical-align: middle;
+    }
+    .proj-stats {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 0.5rem; margin-top: 0.85rem;
+    }
+    .stat {
+      padding: 0.55rem 0.65rem; border-radius: 8px; background: rgba(0,0,0,0.2); border: 1px solid var(--border-soft);
+    }
+    .stat .k { font-size: 0.65rem; color: var(--dim); text-transform: uppercase; letter-spacing: 0.04em; font-family: 'JetBrains Mono', monospace; }
+    .stat .v { font-family: 'JetBrains Mono', monospace; font-size: 0.95rem; font-weight: 600; margin-top: 0.15rem; }
+
+    .note {
+      margin-top: 1rem; padding: 0.75rem 0.9rem; border-radius: 8px;
+      background: rgba(91,184,255,0.06); border: 1px solid rgba(91,184,255,0.15);
+      font-size: 0.78rem; color: var(--muted); line-height: 1.55;
+    }
+    .note strong { color: var(--info); font-weight: 500; }
+
+    footer {
+      margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border-soft);
+      text-align: center; font-size: 0.72rem; color: var(--dim);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    footer a { color: var(--muted); text-decoration: none; }
+    footer a:hover { color: var(--accent); }
+
+    .toast {
+      position: fixed; bottom: 1.25rem; left: 50%; transform: translateX(-50%) translateY(120%);
+      background: var(--bg-elev); border: 1px solid rgba(61,214,140,0.4); color: var(--accent);
+      padding: 0.55rem 1rem; border-radius: 8px; font-size: 0.82rem; z-index: 50;
+      transition: transform 0.3s ease; box-shadow: var(--shadow);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    .horizon-tabs { display: flex; gap: 0.35rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
+    .horizon-tabs button {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; padding: 0.35rem 0.65rem;
+      border-radius: 6px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer;
+    }
+    .horizon-tabs button.active {
+      border-color: rgba(61,214,140,0.4); color: var(--accent); background: rgba(61,214,140,0.1);
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <a class="brand" href="/ecoplan/">
+        <div class="brand-mark">eco</div>
+        <div class="brand-text">
+          <div class="name">eco<span>plan</span></div>
+          <div class="tag">torefos.no · studentøkonomi</div>
+        </div>
+      </a>
+      <div class="header-actions">
+        <button type="button" class="btn ghost" id="btnReset" title="Nullstill til standardverdier">Nullstill</button>
+        <button type="button" class="btn primary" id="btnSave">Lagre lokalt</button>
+        <a class="btn link ghost" href="/">← nettverkslab</a>
+      </div>
+    </header>
+
+    <!-- Dashboard -->
+    <section class="hero">
+      <div class="card">
+        <h2>Månedlig balanse</h2>
+        <div class="balance-big pos" id="balanceBig">+0 kr</div>
+        <div class="balance-sub" id="balanceSub">Etter utgifter og planlagt sparing</div>
+        <div class="pill-row">
+          <span class="pill">Inntekt <strong id="pillIncome">0</strong></span>
+          <span class="pill">Utgifter <strong id="pillExpense">0</strong></span>
+          <span class="pill">Sparing <strong id="pillSave">0</strong></span>
+          <span class="pill">Buffer/rest <strong id="pillRest">0</strong></span>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Fordeling denne måneden</h2>
+        <div class="bars">
+          <div class="bar-row">
+            <label><span>Inntekt</span><span id="barIncomeLbl">0 kr</span></label>
+            <div class="bar-track"><div class="bar-fill income" id="barIncome" style="width:0%"></div></div>
+          </div>
+          <div class="bar-row">
+            <label><span>Livskostnader + lån</span><span id="barExpenseLbl">0 kr</span></label>
+            <div class="bar-track"><div class="bar-fill expense" id="barExpense" style="width:0%"></div></div>
+          </div>
+          <div class="bar-row">
+            <label><span>Planlagt sparing</span><span id="barSaveLbl">0 kr</span></label>
+            <div class="bar-track"><div class="bar-fill save" id="barSave" style="width:0%"></div></div>
+          </div>
+        </div>
+        <div class="note" style="margin-top:0.9rem;margin-bottom:0;">
+          <strong>Tips:</strong> Fyll inn realistiske tall. Alt lagres i nettleseren din — ingen konto, ingen server.
+        </div>
+      </div>
+    </section>
+
+    <div class="grid-2">
+      <!-- Income -->
+      <div class="card">
+        <div class="section-head">
+          <h2>Inntekt / mnd</h2>
+          <span class="sum" id="sumIncome">0 kr</span>
+        </div>
+        <div class="fields">
+          <div class="field">
+            <label for="incJob">Jobb / deltidsjobb</label>
+            <div class="input-wrap"><span class="prefix">kr</span><input type="number" id="incJob" min="0" step="100" value="8000"></div>
+          </div>
+          <div class="field">
+            <label for="incLoan">Studiestøtte / lån (utbetalt)</label>
+            <div class="input-wrap"><span class="prefix">kr</span><input type="number" id="incLoan" min="0" step="100" value="11000"></div>
+            <div class="hint">Det du faktisk får inn på konto per måned</div>
+          </div>
+          <div class="field">
+            <label for="incOther">Annet (stipend, foresatte, …)</label>
+            <div class="input-wrap"><span class="prefix">kr</span><input type="number" id="incOther" min="0" step="100" value="0"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Living costs -->
+      <div class="card">
+        <div class="section-head">
+          <h2>Livskostnader / mnd</h2>
+          <span class="sum neg" id="sumLiving">0 kr</span>
+        </div>
+        <div class="fields">
+          <div class="field">
+            <label for="expHousing">Husleie / låneutgift</label>
+            <div class="input-wrap"><span class="prefix">kr</span><input type="number" id="expHousing" min="0" step="100" value="6500"></div>
+            <div class="hint">Boligleie eller månedlig boliglånsbetaling</div>
+          </div>
+          <div class="field">
+            <label for="expUtilities">Strøm / internett</label>
+            <div class="input-wrap"><span class="prefix">kr</span><input type="number" id="expUtilities" min="0" step="50" value="1000"></div>
+          </div>
+          <div class="field">
+            <label for="expFees">Vann, renovasjon og andre avgifter</label>
+            <div class="input-wrap"><span class="prefix">kr</span><input type="number" id="expFees" min="0" step="50" value="400"></div>
+            <div class="hint">Fellesutgifter, kommunale avgifter m.m.</div>
+          </div>
+          <div class="field">
+            <label for="expInsurance">Forsikringer</label>
+            <div class="input-wrap"><span class="prefix">kr</span><input type="number" id="expInsurance" min="0" step="50" value="400"></div>
+            <div class="hint">Innboforsikring, reise, bil, … (per mnd)</div>
+          </div>
+          <div class="field">
+            <label for="expFood">Mat &amp; husholdning</label>
+            <div class="input-wrap"><span class="prefix">kr</span><input type="number" id="expFood" min="0" step="50" value="3500"></div>
+          </div>
+          <div class="field">
+            <label for="expTransport">Transport</label>
+            <div class="input-wrap"><span class="prefix">kr</span><input type="number" id="expTransport" min="0" step="50" value="500"></div>
+          </div>
+          <div class="field">
+            <label for="expPhone">Mobil / abonnementer</label>
+            <div class="input-wrap"><span class="prefix">kr</span><input type="number" id="expPhone" min="0" step="10" value="400"></div>
+          </div>
+          <div class="field">
+            <label for="expFun">Fritid &amp; diverse</label>
+            <div class="input-wrap"><span class="prefix">kr</span><input type="number" id="expFun" min="0" step="50" value="1500"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <!-- Loans -->
+      <div class="card">
+        <div class="section-head">
+          <h2>Lån &amp; gjeld</h2>
+          <span class="sum muted" id="sumDebt">—</span>
+        </div>
+        <div class="fields">
+          <div class="field">
+            <label for="loanBalance">Studielån (restgjeld totalt)</label>
+            <div class="input-wrap"><span class="prefix">kr</span><input type="number" id="loanBalance" min="0" step="1000" value="180000"></div>
+          </div>
+          <div class="field">
+            <label for="loanRate">Nominell rente % / år</label>
+            <div class="input-wrap"><input type="number" id="loanRate" min="0" max="20" step="0.1" value="4.5"><span class="suffix">%</span></div>
+            <div class="hint">Lånekassen endrer renter — juster når du vil</div>
+          </div>
+          <div class="field">
+            <label for="loanPayment">Månedlig nedbetaling (etter studiet / nå)</label>
+            <div class="input-wrap"><span class="prefix">kr</span><input type="number" id="loanPayment" min="0" step="50" value="0"></div>
+            <div class="hint">0 under studiet er vanlig — sett inn når du skal betale</div>
+          </div>
+          <div class="field">
+            <label for="loanOther">Andre lån / kredittkort / mnd</label>
+            <div class="input-wrap"><span class="prefix">kr</span><input type="number" id="loanOther" min="0" step="50" value="0"></div>
+          </div>
+        </div>
+        <div class="split-list" style="margin-top:0.85rem;" id="loanInsights"></div>
+      </div>
+
+      <!-- Quick overview of expense mix -->
+      <div class="card">
+        <div class="section-head">
+          <h2>Hvor går pengene?</h2>
+          <span class="sum muted" id="sumOutflow">0 kr</span>
+        </div>
+        <div class="split-list" id="expenseSplit"></div>
+        <div class="note">
+          <strong>Tommelfinger:</strong> Prøv at faste kostnader (hus + abonnement + transport) ikke spiser hele inntekten.
+          La det bli rom til både buffer og sparing — selv 500 kr/mnd teller.
+        </div>
+      </div>
+    </div>
+
+    <!-- Savings -->
+    <div class="card" style="margin-bottom:1rem;">
+      <div class="section-head">
+        <h2>Sparing &amp; investering / mnd</h2>
+        <span class="sum" id="sumSave">0 kr</span>
+      </div>
+      <p style="font-size:0.85rem;color:var(--muted);margin-bottom:0.9rem;max-width:52rem;">
+        Fordel månedlig sparing på ulike «bøtter». Forventet årlig avkastning er
+        <em>forenklede antakelser</em> til planlegging — ikke spådom. Crypto er mer volatilt; start gjerne smått.
+      </p>
+      <div class="asset-grid">
+        <div class="asset" style="--asset-c: var(--fund)">
+          <div class="asset-head">
+            <h3>Aksjefond / indeks</h3>
+            <span class="icon">📈</span>
+          </div>
+          <div class="fields">
+            <div class="field">
+              <label for="saveFund">Månedlig spar</label>
+              <div class="input-wrap"><span class="prefix">kr</span><input type="number" id="saveFund" min="0" step="50" value="1000"></div>
+            </div>
+            <div class="field">
+              <label for="rateFund">Forventet avkastning % / år</label>
+              <div class="input-wrap"><input type="number" id="rateFund" min="0" max="30" step="0.5" value="7"><span class="suffix">%</span></div>
+            </div>
+          </div>
+          <div class="asset-foot">
+            <span>Etter <span id="hzLblFund">5</span> år</span>
+            <strong id="projFund">—</strong>
+          </div>
+        </div>
+
+        <div class="asset" style="--asset-c: var(--rentefond)">
+          <div class="asset-head">
+            <h3>Rentefond / buffer</h3>
+            <span class="icon">🛡️</span>
+          </div>
+          <div class="fields">
+            <div class="field">
+              <label for="saveBond">Månedlig spar</label>
+              <div class="input-wrap"><span class="prefix">kr</span><input type="number" id="saveBond" min="0" step="50" value="500"></div>
+            </div>
+            <div class="field">
+              <label for="rateBond">Forventet avkastning % / år</label>
+              <div class="input-wrap"><input type="number" id="rateBond" min="0" max="15" step="0.1" value="3.5"><span class="suffix">%</span></div>
+            </div>
+          </div>
+          <div class="asset-foot">
+            <span>Etter <span id="hzLblBond">5</span> år</span>
+            <strong id="projBond">—</strong>
+          </div>
+        </div>
+
+        <div class="asset" style="--asset-c: var(--gull)">
+          <div class="asset-head">
+            <h3>Gull (fysisk / ETF)</h3>
+            <span class="icon">🪙</span>
+          </div>
+          <div class="fields">
+            <div class="field">
+              <label for="saveGold">Månedlig spar</label>
+              <div class="input-wrap"><span class="prefix">kr</span><input type="number" id="saveGold" min="0" step="50" value="200"></div>
+            </div>
+            <div class="field">
+              <label for="rateGold">Forventet avkastning % / år</label>
+              <div class="input-wrap"><input type="number" id="rateGold" min="-5" max="20" step="0.5" value="3"><span class="suffix">%</span></div>
+            </div>
+          </div>
+          <div class="asset-foot">
+            <span>Etter <span id="hzLblGold">5</span> år</span>
+            <strong id="projGold">—</strong>
+          </div>
+        </div>
+
+        <div class="asset" style="--asset-c: var(--btc)">
+          <div class="asset-head">
+            <h3>Bitcoin / crypto</h3>
+            <span class="icon">₿</span>
+          </div>
+          <div class="fields">
+            <div class="field">
+              <label for="saveBtc">Månedlig spar (DCA)</label>
+              <div class="input-wrap"><span class="prefix">kr</span><input type="number" id="saveBtc" min="0" step="50" value="300"></div>
+            </div>
+            <div class="field">
+              <label for="rateBtc">Scenario-avkastning % / år</label>
+              <div class="input-wrap"><input type="number" id="rateBtc" min="-50" max="100" step="1" value="12"><span class="suffix">%</span></div>
+              <div class="hint">Høyt usikkert — bruk som tankeeksperiment</div>
+            </div>
+            <div class="field">
+              <label for="btcPrice">BTC-pris (valgfritt, kr)</label>
+              <div class="input-wrap"><span class="prefix">kr</span><input type="number" id="btcPrice" min="0" step="1000" value="650000"></div>
+              <div class="hint" id="btcApprox">≈ 0 BTC / mnd ved denne prisen</div>
+            </div>
+          </div>
+          <div class="asset-foot">
+            <span>Etter <span id="hzLblBtc">5</span> år</span>
+            <strong id="projBtc">—</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Projection -->
+    <div class="card">
+      <div class="section-head">
+        <h2>Sparingsplan — projeksjon</h2>
+        <span class="sum" id="projTotal">—</span>
+      </div>
+      <div class="horizon-tabs" id="horizonTabs">
+        <button type="button" data-y="1">1 år</button>
+        <button type="button" data-y="3">3 år</button>
+        <button type="button" data-y="5" class="active">5 år</button>
+        <button type="button" data-y="10">10 år</button>
+      </div>
+      <div class="proj-chart">
+        <canvas id="projCanvas" width="900" height="180" aria-label="Sparingsprojeksjon"></canvas>
+      </div>
+      <div class="proj-legend">
+        <span><i style="background:var(--fund)"></i>Aksjefond</span>
+        <span><i style="background:var(--rentefond)"></i>Rentefond</span>
+        <span><i style="background:var(--gull)"></i>Gull</span>
+        <span><i style="background:var(--btc)"></i>Bitcoin</span>
+        <span><i style="background:var(--dim)"></i>Totalt innbetalt</span>
+      </div>
+      <div class="proj-stats" id="projStats"></div>
+      <div class="note">
+        <strong>Viktig:</strong> Dette er en pedagogisk modell med jevn månedlig sparing og konstant avkastning (sammensatt månedlig).
+        Virkelig avkastning svinger — særlig for crypto. Ikke investeringsråd. Sjekk Lånekassen, skatt (aksjesparekonto m.m.) og egen risikovilje.
+      </div>
+    </div>
+
+    <footer>
+      <a href="/">torefos.no</a> · ecoplan v0.1 · data kun i din nettleser (localStorage)
+    </footer>
+  </div>
+  <div class="toast" id="toast" role="status">Lagret</div>
+
+  <script>
+    const KEY = 'torefos-ecoplan-v2';
+    const KEY_LEGACY = 'torefos-ecoplan-v1';
+    const IDS = [
+      'incJob','incLoan','incOther',
+      'expHousing','expUtilities','expFees','expInsurance','expFood','expTransport','expPhone','expFun',
+      'loanBalance','loanRate','loanPayment','loanOther',
+      'saveFund','rateFund','saveBond','rateBond','saveGold','rateGold','saveBtc','rateBtc','btcPrice'
+    ];
+
+    const DEFAULTS = {
+      incJob: 8000, incLoan: 11000, incOther: 0,
+      expHousing: 6500, expUtilities: 1000, expFees: 400, expInsurance: 400,
+      expFood: 3500, expTransport: 500, expPhone: 400, expFun: 1500,
+      loanBalance: 180000, loanRate: 4.5, loanPayment: 0, loanOther: 0,
+      saveFund: 1000, rateFund: 7, saveBond: 500, rateBond: 3.5,
+      saveGold: 200, rateGold: 3, saveBtc: 300, rateBtc: 12, btcPrice: 650000
+    };
+
+    let horizonYears = 5;
+
+    const $ = id => document.getElementById(id);
+
+    /** Parse any messy input to a finite number (never NaN). */
+    function toNum(v, fallback) {
+      const fb = Number.isFinite(fallback) ? fallback : 0;
+      if (v == null || v === '') return fb;
+      if (typeof v === 'number') return Number.isFinite(v) ? v : fb;
+      let s = String(v).trim().replace(/\s/g, '').replace(/kr/gi, '');
+      // nb: 1.234,56 or 1234,56 → 1234.56
+      if (s.indexOf(',') >= 0 && s.indexOf('.') >= 0) s = s.replace(/\./g, '').replace(',', '.');
+      else if (s.indexOf(',') >= 0) s = s.replace(',', '.');
+      const n = parseFloat(s);
+      return Number.isFinite(n) ? n : fb;
+    }
+
+    function num(id) {
+      const el = $(id);
+      if (!el) return toNum(DEFAULTS[id], 0);
+      return toNum(el.value, toNum(DEFAULTS[id], 0));
+    }
+
+    function fmt(n) {
+      const r = Math.round(toNum(n, 0));
+      const abs = Math.abs(r).toLocaleString('nb-NO');
+      return (r < 0 ? '−' : '') + abs + ' kr';
+    }
+    function fmtSigned(n) {
+      const r = Math.round(toNum(n, 0));
+      const abs = Math.abs(r).toLocaleString('nb-NO');
+      return (r > 0 ? '+' : r < 0 ? '−' : '') + abs + ' kr';
+    }
+
+    function sumFields(s, keys) {
+      return keys.reduce((acc, k) => acc + toNum(s[k], 0), 0);
+    }
+
+    function readState() {
+      const s = {};
+      IDS.forEach(id => { s[id] = num(id); });
+      return s;
+    }
+
+    function sanitizeState(raw) {
+      const src = raw && typeof raw === 'object' ? raw : {};
+      // migrer gammel «expRent» (hus+strøm) til husleie
+      if (src.expRent != null && (src.expHousing == null || src.expHousing === '')) {
+        src.expHousing = src.expRent;
+      }
+      const clean = {};
+      IDS.forEach(id => {
+        clean[id] = toNum(src[id], toNum(DEFAULTS[id], 0));
+      });
+      return clean;
+    }
+
+    function writeState(s) {
+      const clean = sanitizeState(s);
+      IDS.forEach(id => {
+        const el = $(id);
+        if (el) el.value = clean[id];
+      });
+      return clean;
+    }
+
+    function save() {
+      try {
+        localStorage.setItem(KEY, JSON.stringify(readState()));
+      } catch (_) { /* ignore quota */ }
+      const t = $('toast');
+      t.textContent = 'Lagret i nettleseren';
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 1800);
+    }
+
+    function load() {
+      try {
+        let raw = localStorage.getItem(KEY);
+        if (!raw) raw = localStorage.getItem(KEY_LEGACY);
+        if (raw) writeState(JSON.parse(raw));
+        else writeState(DEFAULTS);
+      } catch {
+        writeState(DEFAULTS);
+      }
+    }
+
+    /** Future value of monthly annuity with annual rate % */
+    function fvMonthly(monthly, annualPct, years) {
+      monthly = toNum(monthly, 0);
+      annualPct = toNum(annualPct, 0);
+      years = toNum(years, 0);
+      if (monthly <= 0 || years <= 0) return 0;
+      const r = annualPct / 100 / 12;
+      const n = Math.round(years * 12);
+      if (!Number.isFinite(r) || Math.abs(r) < 1e-12) return monthly * n;
+      const fv = monthly * (Math.pow(1 + r, n) - 1) / r;
+      return Number.isFinite(fv) ? fv : monthly * n;
+    }
+
+    function seriesMonthly(monthly, annualPct, years) {
+      monthly = toNum(monthly, 0);
+      annualPct = toNum(annualPct, 0);
+      years = toNum(years, 0);
+      const points = [];
+      const months = Math.max(0, Math.round(years * 12));
+      const r = annualPct / 100 / 12;
+      let bal = 0;
+      for (let m = 0; m <= months; m++) {
+        points.push(Number.isFinite(bal) ? bal : 0);
+        if (m < months) {
+          bal = (Number.isFinite(r) ? bal * (1 + r) : bal) + monthly;
+          if (!Number.isFinite(bal)) bal = 0;
+        }
+      }
+      return points;
+    }
+
+    function recalc() {
+      const s = readState();
+      const income = sumFields(s, ['incJob', 'incLoan', 'incOther']);
+      const living = sumFields(s, [
+        'expHousing', 'expUtilities', 'expFees', 'expInsurance',
+        'expFood', 'expTransport', 'expPhone', 'expFun'
+      ]);
+      const debtPay = sumFields(s, ['loanPayment', 'loanOther']);
+      const expenses = living + debtPay;
+      const saving = sumFields(s, ['saveFund', 'saveBond', 'saveGold', 'saveBtc']);
+      const rest = income - expenses - saving;
+
+      // Dashboard
+      const big = $('balanceBig');
+      big.textContent = fmtSigned(rest);
+      big.className = 'balance-big ' + (rest >= 0 ? 'pos' : 'neg');
+      $('balanceSub').textContent = rest >= 0
+        ? 'Igjen etter utgifter og planlagt sparing — buffer / ekstra'
+        : 'Underskudd: kutt utgifter, sparing, eller øk inntekt';
+
+      $('pillIncome').textContent = fmt(income);
+      $('pillExpense').textContent = fmt(expenses);
+      $('pillSave').textContent = fmt(saving);
+      $('pillRest').textContent = fmtSigned(rest);
+
+      const maxBar = Math.max(income, expenses, saving, 1);
+      $('barIncome').style.width = (income / maxBar * 100) + '%';
+      $('barExpense').style.width = (expenses / maxBar * 100) + '%';
+      $('barSave').style.width = (saving / maxBar * 100) + '%';
+      $('barIncomeLbl').textContent = fmt(income);
+      $('barExpenseLbl').textContent = fmt(expenses);
+      $('barSaveLbl').textContent = fmt(saving);
+
+      $('sumIncome').textContent = fmt(income);
+      $('sumLiving').textContent = fmt(living);
+      $('sumSave').textContent = fmt(saving);
+      $('sumOutflow').textContent = fmt(expenses + saving);
+
+      // Loan insights
+      const monthlyInterest = s.loanBalance * (s.loanRate / 100) / 12;
+      let yearsLeft = '—';
+      if (s.loanPayment > monthlyInterest && s.loanBalance > 0) {
+        // approximate months to pay off
+        const r = s.loanRate / 100 / 12;
+        const pmt = s.loanPayment;
+        const n = Math.log(pmt / (pmt - s.loanBalance * r)) / Math.log(1 + r);
+        if (isFinite(n) && n > 0) yearsLeft = (n / 12).toFixed(1) + ' år';
+      } else if (s.loanPayment > 0 && s.loanPayment <= monthlyInterest) {
+        yearsLeft = 'dekker ikke renter';
+      } else if (s.loanPayment === 0) {
+        yearsLeft = 'ingen nedbetaling nå';
+      }
+      $('sumDebt').textContent = fmt(s.loanBalance);
+      $('loanInsights').innerHTML = [
+        ['Estimert rente / mnd', fmt(monthlyInterest), ''],
+        ['Nedbetaling / mnd', fmt(debtPay), ''],
+        ['Tid igjen (ca.)', yearsLeft, ''],
+        ['Årlig rente på rest', s.loanRate.toFixed(1) + ' %', '']
+      ].map(([a, b]) =>
+        '<div class="split-item"><span class="dot" style="background:var(--warn)"></span>' +
+        '<div><div class="lbl">' + a + '</div></div><div class="amt">' + b + '</div></div>'
+      ).join('');
+
+      // Expense split
+      const parts = [
+        { lbl: 'Husleie / lån', v: s.expHousing, c: 'var(--danger)' },
+        { lbl: 'Strøm / internett', v: s.expUtilities, c: '#e07a5f' },
+        { lbl: 'Vann / renovasjon / avgifter', v: s.expFees, c: '#d4a373' },
+        { lbl: 'Forsikringer', v: s.expInsurance, c: '#9b5de5' },
+        { lbl: 'Mat', v: s.expFood, c: '#f2cc8f' },
+        { lbl: 'Transport', v: s.expTransport, c: '#81b29a' },
+        { lbl: 'Mobil / abo', v: s.expPhone, c: '#457b9d' },
+        { lbl: 'Fritid', v: s.expFun, c: '#3d405b' },
+        { lbl: 'Lån / kreditt', v: debtPay, c: 'var(--warn)' },
+        { lbl: 'Sparing', v: saving, c: 'var(--accent)' }
+      ].filter(p => p.v > 0);
+      const totalOut = parts.reduce((a, p) => a + p.v, 0) || 1;
+      $('expenseSplit').innerHTML = parts.map(p =>
+        '<div class="split-item"><span class="dot" style="background:' + p.c + '"></span>' +
+        '<div><div class="lbl">' + p.lbl + '</div><div class="sub">' +
+        (p.v / totalOut * 100).toFixed(0) + ' % av ut + spar</div></div>' +
+        '<div class="amt">' + fmt(p.v) + '</div></div>'
+      ).join('') || '<div class="split-item"><span class="dot" style="background:var(--dim)"></span><div class="lbl">Ingen utgifter ennå</div><div class="amt">0</div></div>';
+
+      // Asset projections
+      const y = horizonYears;
+      ['Fund', 'Bond', 'Gold', 'Btc'].forEach(k => {
+        const el = document.getElementById('hzLbl' + k);
+        if (el) el.textContent = String(y);
+      });
+      const fvFund = fvMonthly(s.saveFund, s.rateFund, y);
+      const fvBond = fvMonthly(s.saveBond, s.rateBond, y);
+      const fvGold = fvMonthly(s.saveGold, s.rateGold, y);
+      const fvBtc = fvMonthly(s.saveBtc, s.rateBtc, y);
+      $('projFund').textContent = fmt(fvFund);
+      $('projBond').textContent = fmt(fvBond);
+      $('projGold').textContent = fmt(fvGold);
+      $('projBtc').textContent = fmt(fvBtc);
+
+      const paid = (s.saveFund + s.saveBond + s.saveGold + s.saveBtc) * y * 12;
+      const totalFv = fvFund + fvBond + fvGold + fvBtc;
+      $('projTotal').textContent = fmt(totalFv);
+
+      if (s.btcPrice > 0 && s.saveBtc > 0) {
+        const btcM = s.saveBtc / s.btcPrice;
+        $('btcApprox').textContent = '≈ ' + btcM.toFixed(6) + ' BTC / mnd · ca. ' +
+          (btcM * y * 12).toFixed(4) + ' BTC over ' + y + ' år (ved fast pris)';
+      } else {
+        $('btcApprox').textContent = 'Sett pris for å se omtrentlig BTC-mengde';
+      }
+
+      $('projStats').innerHTML = [
+        { k: 'Totalt innbetalt', v: fmt(paid) },
+        { k: 'Estimert verdi', v: fmt(totalFv) },
+        { k: 'Estimert vekst', v: fmtSigned(totalFv - paid) },
+        { k: 'Sparing / mnd', v: fmt(saving) },
+        { k: 'Buffer / mnd', v: fmtSigned(rest), cls: rest < 0 ? 'color:var(--danger)' : '' },
+        { k: 'Horisont', v: y + ' år' }
+      ].map(x =>
+        '<div class="stat"><div class="k">' + x.k + '</div><div class="v" style="' + (x.cls || '') + '">' + x.v + '</div></div>'
+      ).join('');
+
+      drawChart(s, y);
+    }
+
+    function drawChart(s, years) {
+      const canvas = $('projCanvas');
+      const ctx = canvas.getContext('2d');
+      const dpr = window.devicePixelRatio || 1;
+      const w = canvas.clientWidth || 900;
+      const h = canvas.clientHeight || 180;
+      canvas.width = Math.floor(w * dpr);
+      canvas.height = Math.floor(h * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, w, h);
+
+      const series = {
+        fund: seriesMonthly(s.saveFund, s.rateFund, years),
+        bond: seriesMonthly(s.saveBond, s.rateBond, years),
+        gold: seriesMonthly(s.saveGold, s.rateGold, years),
+        btc: seriesMonthly(s.saveBtc, s.rateBtc, years)
+      };
+      const n = series.fund.length;
+      const total = [];
+      const paid = [];
+      const monthly = s.saveFund + s.saveBond + s.saveGold + s.saveBtc;
+      for (let i = 0; i < n; i++) {
+        total.push(series.fund[i] + series.bond[i] + series.gold[i] + series.btc[i]);
+        paid.push(monthly * i);
+      }
+      const maxY = Math.max(...total, ...paid, 1) * 1.08;
+      const pad = { l: 8, r: 8, t: 16, b: 20 };
+      const iw = w - pad.l - pad.r;
+      const ih = h - pad.t - pad.b;
+
+      // grid
+      ctx.strokeStyle = 'rgba(36,48,43,0.9)';
+      ctx.lineWidth = 1;
+      for (let g = 0; g <= 4; g++) {
+        const y = pad.t + (ih * g) / 4;
+        ctx.beginPath();
+        ctx.moveTo(pad.l, y);
+        ctx.lineTo(w - pad.r, y);
+        ctx.stroke();
+      }
+
+      function xAt(i) { return pad.l + (i / (n - 1)) * iw; }
+      function yAt(v) { return pad.t + ih - (v / maxY) * ih; }
+
+      // stacked areas: fund, bond, gold, btc
+      const colors = {
+        fund: 'rgba(91,184,255,0.55)',
+        bond: 'rgba(139,156,255,0.5)',
+        gold: 'rgba(245,185,66,0.45)',
+        btc: 'rgba(247,147,26,0.45)'
+      };
+      const order = ['fund', 'bond', 'gold', 'btc'];
+      const stack = new Array(n).fill(0);
+      order.forEach(key => {
+        ctx.beginPath();
+        for (let i = 0; i < n; i++) {
+          const y = yAt(stack[i] + series[key][i]);
+          if (i === 0) ctx.moveTo(xAt(i), y);
+          else ctx.lineTo(xAt(i), y);
+        }
+        for (let i = n - 1; i >= 0; i--) {
+          ctx.lineTo(xAt(i), yAt(stack[i]));
+        }
+        ctx.closePath();
+        ctx.fillStyle = colors[key];
+        ctx.fill();
+        for (let i = 0; i < n; i++) stack[i] += series[key][i];
+      });
+
+      // paid line
+      ctx.beginPath();
+      ctx.setLineDash([4, 4]);
+      ctx.strokeStyle = 'rgba(92,111,102,0.9)';
+      ctx.lineWidth = 1.5;
+      for (let i = 0; i < n; i++) {
+        const x = xAt(i), y = yAt(paid[i]);
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // total line
+      ctx.beginPath();
+      ctx.strokeStyle = 'rgba(61,214,140,0.95)';
+      ctx.lineWidth = 2;
+      for (let i = 0; i < n; i++) {
+        const x = xAt(i), y = yAt(total[i]);
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+
+      // end label
+      ctx.fillStyle = 'rgba(232,240,236,0.7)';
+      ctx.font = '11px JetBrains Mono, monospace';
+      ctx.textAlign = 'right';
+      ctx.fillText(fmt(total[n - 1]), w - pad.r, Math.max(pad.t + 12, yAt(total[n - 1]) - 6));
+    }
+
+    // Events
+    IDS.forEach(id => {
+      const el = $(id);
+      if (!el) return;
+      el.addEventListener('input', recalc);
+    });
+    $('horizonTabs').addEventListener('click', e => {
+      const btn = e.target.closest('button[data-y]');
+      if (!btn) return;
+      horizonYears = parseInt(btn.dataset.y, 10);
+      $('horizonTabs').querySelectorAll('button').forEach(b => b.classList.toggle('active', b === btn));
+      recalc();
+    });
+    $('btnSave').addEventListener('click', save);
+    $('btnReset').addEventListener('click', () => {
+      if (!confirm('Nullstille til standardverdier? Lagret data slettes.')) return;
+      localStorage.removeItem(KEY);
+      writeState(DEFAULTS);
+      horizonYears = 5;
+      $('horizonTabs').querySelectorAll('button').forEach(b => {
+        b.classList.toggle('active', b.dataset.y === '5');
+      });
+      recalc();
+      const t = $('toast');
+      t.textContent = 'Nullstilt';
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 1600);
+    });
+    window.addEventListener('resize', () => recalc());
+
+    // Auto-save on change (debounced)
+    let saveTimer;
+    IDS.forEach(id => {
+      const el = $(id);
+      if (!el) return;
+      el.addEventListener('change', () => {
+        clearTimeout(saveTimer);
+        saveTimer = setTimeout(() => {
+          try { localStorage.setItem(KEY, JSON.stringify(readState())); } catch (_) {}
+        }, 400);
+      });
+    });
+
+    try {
+      load();
+      recalc();
+    } catch (err) {
+      console.error('ecoplan init', err);
+      writeState(DEFAULTS);
+      recalc();
+    }
+  </script>
+</body>
+</html>
