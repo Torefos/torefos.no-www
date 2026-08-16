@@ -434,6 +434,112 @@
     .stp-leg-dp::before { background: var(--success); }
     .stp-leg-blk::before { background: #e05555; }
 
+    /* Ansible lab */
+    .ans-layout { display: grid; grid-template-columns: 1fr 300px; gap: 1.25rem; }
+    @media (max-width: 900px) { .ans-layout { grid-template-columns: 1fr; } }
+    .ans-stage { background: var(--input-bg); border: 1px solid var(--border); border-radius: 6px; padding: 1.1rem 1rem 1rem; }
+    .ans-stage-title { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.85rem; }
+    .ans-topo { display: grid; grid-template-columns: 110px 1fr; gap: 0.75rem; align-items: start; margin-bottom: 1rem; }
+    @media (max-width: 560px) { .ans-topo { grid-template-columns: 1fr; } }
+    .ans-control {
+      text-align: center; padding: 0.75rem 0.5rem; background: var(--bg-elevated);
+      border: 1px solid rgba(0,212,255,0.35); border-radius: 8px;
+    }
+    .ans-control .box {
+      width: 56px; height: 48px; margin: 0 auto 0.4rem; border-radius: 8px;
+      background: linear-gradient(180deg, #1a2332, #121820); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center; font-size: 1.35rem;
+    }
+    .ans-control .lbl { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--accent); font-weight: 600; }
+    .ans-control .sub { font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; color: var(--text-dim); margin-top: 0.15rem; }
+    .ans-hosts { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: flex-start; }
+    .ans-host {
+      width: 100px; text-align: center; padding: 0.55rem 0.4rem; border-radius: 8px;
+      background: var(--bg-elevated); border: 1px solid var(--border); transition: border-color 0.2s, box-shadow 0.2s, opacity 0.2s;
+    }
+    .ans-host .box {
+      width: 48px; height: 40px; margin: 0 auto 0.35rem; border-radius: 6px;
+      background: var(--input-bg); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+    }
+    .ans-host .name { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--text); font-weight: 500; }
+    .ans-host .groups { font-family: 'JetBrains Mono', monospace; font-size: 0.55rem; color: var(--text-dim); margin-top: 0.15rem; min-height: 1.4em; }
+    .ans-host .badge {
+      margin-top: 0.35rem; font-family: 'JetBrains Mono', monospace; font-size: 0.55rem;
+      padding: 0.12rem 0.35rem; border-radius: 3px; display: inline-block; min-height: 1.1em;
+    }
+    .ans-host.target { border-color: rgba(0,212,255,0.45); box-shadow: 0 0 12px rgba(0,212,255,0.12); }
+    .ans-host.skip { opacity: 0.4; }
+    .ans-host.running { border-color: var(--vlan30); box-shadow: 0 0 12px rgba(245,158,11,0.2); }
+    .ans-host.ok .badge { color: var(--success); background: rgba(61,214,140,0.12); border: 1px solid rgba(61,214,140,0.3); }
+    .ans-host.changed .badge { color: var(--vlan30); background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.35); }
+    .ans-host.failed .badge { color: #e05555; background: rgba(224,85,85,0.12); border: 1px solid rgba(224,85,85,0.35); }
+    .ans-host.skipped .badge { color: var(--text-dim); background: rgba(90,106,126,0.15); border: 1px solid var(--border); }
+    .ans-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem; }
+    @media (max-width: 640px) { .ans-cols { grid-template-columns: 1fr; } }
+    .ans-card {
+      background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 6px; padding: 0.7rem 0.75rem;
+    }
+    .ans-card h3 {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--accent);
+      text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.5rem;
+    }
+    .ans-code {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; line-height: 1.55;
+      background: #080b10; border: 1px solid var(--border); border-radius: 4px;
+      padding: 0.55rem 0.65rem; color: var(--text-muted); overflow-x: auto; white-space: pre;
+      max-height: 200px; overflow-y: auto;
+    }
+    .ans-code .c-key { color: var(--accent); }
+    .ans-code .c-str { color: var(--success); }
+    .ans-code .c-cmt { color: var(--text-dim); }
+    .ans-code .c-task { color: var(--vlan30); }
+    .ans-code .c-hi { background: rgba(0,212,255,0.12); border-radius: 2px; }
+    .ans-inv-list { display: flex; flex-direction: column; gap: 0.35rem; margin-bottom: 0.5rem; }
+    .ans-inv-row {
+      display: grid; grid-template-columns: 1fr auto; gap: 0.4rem; align-items: center;
+      font-family: 'JetBrains Mono', monospace; font-size: 0.68rem;
+    }
+    .ans-inv-row label { display: flex; align-items: center; gap: 0.4rem; color: var(--text-muted); cursor: pointer; }
+    .ans-inv-row input[type=checkbox] { accent-color: var(--accent); width: 14px; height: 14px; cursor: pointer; }
+    .ans-inv-row .grp { color: var(--text-dim); font-size: 0.58rem; }
+    .ans-tasks { display: flex; flex-direction: column; gap: 0.35rem; }
+    .ans-task {
+      display: flex; align-items: flex-start; gap: 0.45rem; padding: 0.4rem 0.5rem;
+      border: 1px solid var(--border); border-radius: 4px; background: var(--input-bg);
+      font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--text-muted);
+    }
+    .ans-task input { accent-color: var(--accent); margin-top: 0.1rem; flex-shrink: 0; }
+    .ans-task.active { border-color: var(--accent); color: var(--accent); background: rgba(0,212,255,0.06); }
+    .ans-task .mod { color: var(--vlan20); font-size: 0.58rem; display: block; margin-top: 0.15rem; }
+    .ans-run-opts { display: flex; flex-wrap: wrap; gap: 0.65rem 1rem; margin: 0.65rem 0; align-items: center; }
+    .ans-run-opts label {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--text-muted);
+      display: flex; align-items: center; gap: 0.35rem; cursor: pointer;
+    }
+    .ans-run-opts select, .ans-run-opts input[type=text] {
+      background: var(--input-bg); border: 1px solid var(--border); border-radius: 4px;
+      color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 0.72rem;
+      padding: 0.3rem 0.45rem; outline: none;
+    }
+    .ans-run-opts select:focus, .ans-run-opts input[type=text]:focus { border-color: var(--accent); }
+    .ans-term {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; line-height: 1.5;
+      background: #080b10; border: 1px solid var(--border); border-radius: 4px;
+      padding: 0.6rem 0.75rem; max-height: 160px; overflow-y: auto; color: var(--text-dim);
+      min-height: 5rem;
+    }
+    .ans-term .ok { color: var(--success); }
+    .ans-term .changed { color: var(--vlan30); }
+    .ans-term .failed { color: #e05555; }
+    .ans-term .skip { color: var(--text-dim); }
+    .ans-term .info { color: var(--accent); }
+    .ans-term .recap { color: var(--text); margin-top: 0.35rem; }
+    .ans-arrow {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; color: var(--text-dim);
+      text-align: center; margin: 0.25rem 0 0.5rem;
+    }
+
     footer { position: relative; z-index: 10; padding: 0.9rem 1.25rem; text-align: center; border-top: 1px solid var(--border); font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; color: var(--text-dim); letter-spacing: 0.03em; }
   </style>
 </head>
@@ -497,6 +603,7 @@
       <button class="tab" data-tab="dhcp" type="button">DHCP</button>
       <button class="tab" data-tab="dns" type="button">DNS</button>
       <button class="tab" data-tab="stp" type="button">Spanning Tree</button>
+      <button class="tab" data-tab="ansible" type="button">Ansible</button>
       <button class="tab soon" type="button" disabled>DHCP Snooping</button>
     </nav>
 
@@ -967,6 +1074,70 @@
             <p>STP bygger et <span class="key">spennende tre</span>: velger én <span class="key">root bridge</span>, finner beste sti dit, og <span class="key">blokkerer</span> porter som ellers ville lukket en løkke.</p>
             <p>Porter: <span class="key">RP</span> (mot root), <span class="key">DP</span> (designated på segmentet), <span class="key">BLK</span> (alternativ / blokkert).</p>
             <p style="margin-top:0.85rem;color:var(--text-dim);font-size:0.78rem;">Tips: senk priority på SW-A, kjør på nytt. Fail en lenke. Skru av STP og kjør broadcast-demo.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" id="panel-ansible">
+      <div class="panel-header"><h2>Ansible — inventory, playbook &amp; run</h2><span class="hint">interaktiv demo · forenklet</span></div>
+      <div class="panel-body">
+        <div class="ans-layout">
+          <div>
+            <div class="ans-stage" id="ansStage">
+              <div class="ans-stage-title">Control node · inventory · playbook · task-resultater</div>
+
+              <div class="ans-topo">
+                <div class="ans-control" id="ansControl">
+                  <div class="box">⎈</div>
+                  <div class="lbl">control</div>
+                  <div class="sub">ansible-core<br>ssh · modules</div>
+                </div>
+                <div>
+                  <div class="ans-arrow">ssh / winrm · managed nodes ← inventory</div>
+                  <div class="ans-hosts" id="ansHosts"></div>
+                </div>
+              </div>
+
+              <div class="ans-cols">
+                <div class="ans-card">
+                  <h3>Inventory</h3>
+                  <div class="ans-inv-list" id="ansInvList"></div>
+                  <div class="ans-code" id="ansInvPreview"></div>
+                </div>
+                <div class="ans-card">
+                  <h3>Playbook · tasks</h3>
+                  <div class="ans-tasks" id="ansTaskList"></div>
+                  <div class="ans-code" id="ansPlayPreview" style="margin-top:0.5rem;"></div>
+                </div>
+              </div>
+
+              <div class="ans-run-opts">
+                <label>hosts:
+                  <select id="ansHostsSel">
+                    <option value="all">all</option>
+                    <option value="webservers" selected>webservers</option>
+                    <option value="databases">databases</option>
+                    <option value="web1">web1 (limit)</option>
+                  </select>
+                </label>
+                <label><input type="checkbox" id="ansCheck"> --check (dry-run)</label>
+                <label><input type="checkbox" id="ansFailWeb2"> simuler feil på web2</label>
+              </div>
+
+              <div class="controls">
+                <button class="btn" type="button" id="ansRun">ansible-playbook site.yml</button>
+                <button class="btn ghost" type="button" id="ansReset">Nullstill hoster</button>
+              </div>
+              <div class="ans-term" id="ansTerm">$ klar — velg inventory-grupper og tasks, trykk playbook-knappen.</div>
+            </div>
+          </div>
+          <div class="explain" id="ansExplain">
+            <h3>Hva er Ansible?</h3>
+            <p><span class="key">Ansible</span> er agentløs automasjon: control node snakker med hoster via SSH (eller WinRM) og kjører <span class="key">moduler</span>.</p>
+            <p><span class="key">Inventory</span> lister maskiner og <em>grupper</em> (f.eks. webservers). Playbooken sier <span class="key">hosts:</span> hvilken gruppe som skal treffes.</p>
+            <p><span class="key">Playbook</span> er YAML: en liste med <span class="key">tasks</span>. Hver task kaller en modul (apt, service, copy …) og returnerer <span class="key">ok</span>, <span class="key">changed</span> eller <span class="key">failed</span>.</p>
+            <p style="margin-top:0.85rem;color:var(--text-dim);font-size:0.78rem;">Tips: bytt hosts til «databases», slå av en host i inventory, eller prøv --check. Se terminalen og host-badges.</p>
           </div>
         </div>
       </div>
@@ -2879,6 +3050,334 @@
     });
     // initial compute
     runStp(false);
+
+    /* ——— Ansible lab ——— */
+    const ANS_HOSTS = [
+      { id: 'web1', name: 'web1', groups: ['webservers'], icon: '🌐' },
+      { id: 'web2', name: 'web2', groups: ['webservers'], icon: '🌐' },
+      { id: 'db1', name: 'db1', groups: ['databases'], icon: '🗄' }
+    ];
+    const ANS_TASKS = [
+      { id: 'apt', name: 'Install nginx', module: 'ansible.builtin.apt', args: "name=nginx state=present", groups: ['webservers'] },
+      { id: 'svc', name: 'Start nginx', module: 'ansible.builtin.service', args: "name=nginx state=started enabled=true", groups: ['webservers'] },
+      { id: 'copy', name: 'Deploy index.html', module: 'ansible.builtin.copy', args: "src=index.html dest=/var/www/html/", groups: ['webservers'] },
+      { id: 'pg', name: 'Install postgresql', module: 'ansible.builtin.apt', args: "name=postgresql state=present", groups: ['databases'] },
+      { id: 'pg_svc', name: 'Start postgresql', module: 'ansible.builtin.service', args: "name=postgresql state=started", groups: ['databases'] }
+    ];
+
+    const ansHostsEl = document.getElementById('ansHosts');
+    const ansInvList = document.getElementById('ansInvList');
+    const ansInvPreview = document.getElementById('ansInvPreview');
+    const ansTaskList = document.getElementById('ansTaskList');
+    const ansPlayPreview = document.getElementById('ansPlayPreview');
+    const ansTerm = document.getElementById('ansTerm');
+    const ansExplain = document.getElementById('ansExplain');
+    const ansHostsSel = document.getElementById('ansHostsSel');
+    const ansCheck = document.getElementById('ansCheck');
+    const ansFailWeb2 = document.getElementById('ansFailWeb2');
+    let ansBusy = false;
+    /** host state: enabled in inventory, last result badge */
+    const ansState = {};
+    ANS_HOSTS.forEach(h => { ansState[h.id] = { enabled: true, result: null }; });
+    const ansTaskEnabled = {};
+    ANS_TASKS.forEach(t => { ansTaskEnabled[t.id] = true; });
+
+    const ANS_STEP_MS = 700;
+    const ANS_PAUSE_MS = 350;
+    function sleepAns(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    function ansLog(msg, cls) {
+      const line = document.createElement('div');
+      if (cls) line.className = cls;
+      line.textContent = msg;
+      ansTerm.appendChild(line);
+      ansTerm.scrollTop = ansTerm.scrollHeight;
+    }
+    function ansClearLog() { ansTerm.innerHTML = ''; }
+
+    function renderAnsHosts() {
+      ansHostsEl.innerHTML = ANS_HOSTS.map(h => {
+        const st = ansState[h.id];
+        const res = st.result;
+        let cls = 'ans-host';
+        if (!st.enabled) cls += ' skip';
+        if (res === 'running') cls += ' running';
+        if (res === 'ok') cls += ' ok';
+        if (res === 'changed') cls += ' changed';
+        if (res === 'failed') cls += ' failed';
+        if (res === 'skipped') cls += ' skipped';
+        const badge = res && res !== 'running'
+          ? '<span class="badge">' + res.toUpperCase() + '</span>'
+          : (res === 'running' ? '<span class="badge">…</span>' : '<span class="badge"></span>');
+        return '<div class="' + cls + '" id="ansHost-' + h.id + '">' +
+          '<div class="box">' + h.icon + '</div>' +
+          '<div class="name">' + h.name + '</div>' +
+          '<div class="groups">' + h.groups.join(', ') + '</div>' +
+          badge + '</div>';
+      }).join('');
+    }
+
+    function renderAnsInv() {
+      ansInvList.innerHTML = ANS_HOSTS.map(h => {
+        const st = ansState[h.id];
+        return '<div class="ans-inv-row">' +
+          '<label><input type="checkbox" data-host="' + h.id + '"' + (st.enabled ? ' checked' : '') + '> ' + h.name + '</label>' +
+          '<span class="grp">[' + h.groups.join('] [') + ']</span></div>';
+      }).join('');
+      ansInvList.querySelectorAll('input[data-host]').forEach(inp => {
+        inp.addEventListener('change', () => {
+          ansState[inp.dataset.host].enabled = inp.checked;
+          if (!inp.checked) ansState[inp.dataset.host].result = null;
+          renderAnsHosts();
+          updateAnsPreviews();
+        });
+      });
+    }
+
+    function renderAnsTasks() {
+      ansTaskList.innerHTML = ANS_TASKS.map(t => {
+        return '<label class="ans-task" id="ansTask-' + t.id + '">' +
+          '<input type="checkbox" data-task="' + t.id + '"' + (ansTaskEnabled[t.id] ? ' checked' : '') + '>' +
+          '<span><strong>' + t.name + '</strong><span class="mod">' + t.module + '</span></span></label>';
+      }).join('');
+      ansTaskList.querySelectorAll('input[data-task]').forEach(inp => {
+        inp.addEventListener('change', () => {
+          ansTaskEnabled[inp.dataset.task] = inp.checked;
+          updateAnsPreviews();
+        });
+      });
+    }
+
+    function escHtml(s) {
+      return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function updateAnsPreviews() {
+      // inventory INI-style
+      const byGroup = {};
+      ANS_HOSTS.forEach(h => {
+        if (!ansState[h.id].enabled) return;
+        h.groups.forEach(g => {
+          if (!byGroup[g]) byGroup[g] = [];
+          byGroup[g].push(h.name);
+        });
+      });
+      let inv = '<span class="c-cmt"># inventory.ini</span>\n';
+      Object.keys(byGroup).forEach(g => {
+        inv += '<span class="c-key">[' + escHtml(g) + ']</span>\n';
+        byGroup[g].forEach(n => { inv += escHtml(n) + '\n'; });
+        inv += '\n';
+      });
+      if (!Object.keys(byGroup).length) inv += '<span class="c-cmt"># (ingen hoster valgt)</span>\n';
+      ansInvPreview.innerHTML = inv.trim();
+
+      const hostsLine = ansHostsSel.value;
+      const tasks = ANS_TASKS.filter(t => ansTaskEnabled[t.id]);
+      let pb = '<span class="c-cmt"># site.yml</span>\n';
+      pb += '- <span class="c-key">name</span>: <span class="c-str">Demo play</span>\n';
+      pb += '  <span class="c-key">hosts</span>: <span class="c-str">' + escHtml(hostsLine) + '</span>\n';
+      pb += '  <span class="c-key">become</span>: true\n';
+      pb += '  <span class="c-key">tasks</span>:\n';
+      if (!tasks.length) pb += '    <span class="c-cmt"># (ingen tasks valgt)</span>\n';
+      tasks.forEach(t => {
+        pb += '    - <span class="c-key">name</span>: <span class="c-task">' + escHtml(t.name) + '</span>\n';
+        pb += '      <span class="c-key">' + escHtml(t.module) + '</span>:\n';
+        // crude arg split for display
+        t.args.split(' ').forEach(a => {
+          const eq = a.indexOf('=');
+          if (eq > 0) {
+            pb += '        <span class="c-key">' + escHtml(a.slice(0, eq)) + '</span>: <span class="c-str">' + escHtml(a.slice(eq + 1)) + '</span>\n';
+          }
+        });
+      });
+      ansPlayPreview.innerHTML = pb.trim();
+    }
+
+    function resolveTargetHosts() {
+      const sel = ansHostsSel.value;
+      return ANS_HOSTS.filter(h => {
+        if (!ansState[h.id].enabled) return false;
+        if (sel === 'all') return true;
+        if (sel === h.id) return true;
+        return h.groups.includes(sel);
+      });
+    }
+
+    function taskAppliesToHost(task, host) {
+      return task.groups.some(g => host.groups.includes(g));
+    }
+
+    function highlightTask(taskId) {
+      document.querySelectorAll('.ans-task').forEach(el => {
+        el.classList.toggle('active', el.id === 'ansTask-' + taskId);
+      });
+    }
+
+    async function runAnsiblePlaybook() {
+      if (ansBusy) return;
+      ansBusy = true;
+      document.getElementById('ansRun').disabled = true;
+      ansClearLog();
+      ANS_HOSTS.forEach(h => { ansState[h.id].result = null; });
+      renderAnsHosts();
+
+      const targets = resolveTargetHosts();
+      const tasks = ANS_TASKS.filter(t => ansTaskEnabled[t.id]);
+      const check = ansCheck.checked;
+      const failWeb2 = ansFailWeb2.checked;
+      const hostsLine = ansHostsSel.value;
+
+      if (!targets.length) {
+        ansLog('ERROR! no hosts matched the inventory / hosts pattern', 'failed');
+        ansExplain.innerHTML = '<h3>Ingen hoster</h3><p>Inventory er tom, eller <span class="key">hosts:</span> matcher ingen aktiverte maskiner. Huk av hoster eller bytt gruppe.</p>';
+        ansBusy = false;
+        document.getElementById('ansRun').disabled = false;
+        return;
+      }
+      if (!tasks.length) {
+        ansLog('ERROR! no tasks in play', 'failed');
+        ansBusy = false;
+        document.getElementById('ansRun').disabled = false;
+        return;
+      }
+
+      // Mark non-targets as skip visually
+      ANS_HOSTS.forEach(h => {
+        const el = document.getElementById('ansHost-' + h.id);
+        if (!el) return;
+        const isTarget = targets.some(t => t.id === h.id);
+        el.classList.toggle('skip', !isTarget || !ansState[h.id].enabled);
+        el.classList.toggle('target', isTarget);
+      });
+
+      ansLog('PLAY [Demo play] ************************************************', 'info');
+      ansLog('', 'info');
+      ansLog('TASK [Gathering Facts] ' + (check ? '(check mode)' : ''), 'info');
+      await sleepAns(ANS_PAUSE_MS);
+      for (const h of targets) {
+        ansLog('ok: [' + h.name + ']', 'ok');
+        await sleepAns(120);
+      }
+
+      const recap = {};
+      targets.forEach(h => { recap[h.name] = { ok: 0, changed: 0, unreachable: 0, failed: 0, skipped: 0 }; });
+
+      for (const task of tasks) {
+        highlightTask(task.id);
+        ansLog('', 'info');
+        ansLog('TASK [' + task.name + '] *******' + (check ? '  check_mode=true' : ''), 'info');
+        await sleepAns(ANS_PAUSE_MS);
+
+        for (const h of targets) {
+          ansState[h.id].result = 'running';
+          renderAnsHosts();
+          document.getElementById('ansHost-' + h.id)?.classList.add('target');
+
+          await sleepAns(ANS_STEP_MS);
+
+          if (!taskAppliesToHost(task, h)) {
+            ansState[h.id].result = 'skipped';
+            recap[h.name].skipped++;
+            ansLog('skipping: [' + h.name + ']  (host not in task groups: ' + task.groups.join(',') + ')', 'skip');
+            renderAnsHosts();
+            await sleepAns(ANS_PAUSE_MS * 0.5);
+            continue;
+          }
+
+          // Simulated failure
+          if (failWeb2 && h.id === 'web2' && task.id === 'svc') {
+            ansState[h.id].result = 'failed';
+            recap[h.name].failed++;
+            ansLog('fatal: [' + h.name + ']: FAILED! => {"msg": "Unable to start service nginx"}', 'failed');
+            renderAnsHosts();
+            ansExplain.innerHTML = '<h3>failed</h3><p>En task returnerte feil. Uten <span class="key">ignore_errors</span> stopper playbooken for den hosten (forenklet her: vi fortsetter demoen på andre hoster).</p><p>Se <span class="key">PLAY RECAP</span> nederst i terminalen.</p>';
+            await sleepAns(ANS_PAUSE_MS);
+            continue;
+          }
+
+          // Idempotence demo: second apt on same host often "ok" not changed — we vary by task
+          const isChange = !check && (task.id === 'apt' || task.id === 'copy' || task.id === 'pg' || task.id === 'svc' || task.id === 'pg_svc');
+          // first modules "changed", re-run feel: use a bit of determinism — apt/pg changed, service/copy ok if check
+          let status;
+          if (check) {
+            status = 'ok';
+            // check mode may report would-be change
+            if (task.id === 'apt' || task.id === 'copy' || task.id === 'pg') {
+              ansLog('ok: [' + h.name + ']  (check) => would change', 'changed');
+              recap[h.name].ok++;
+              ansState[h.id].result = 'changed';
+            } else {
+              ansLog('ok: [' + h.name + ']  (check)', 'ok');
+              recap[h.name].ok++;
+              ansState[h.id].result = 'ok';
+            }
+          } else if (isChange && (task.id === 'apt' || task.id === 'copy' || task.id === 'pg')) {
+            status = 'changed';
+            ansLog('changed: [' + h.name + ']', 'changed');
+            recap[h.name].changed++;
+            ansState[h.id].result = 'changed';
+          } else {
+            status = 'ok';
+            ansLog('ok: [' + h.name + ']', 'ok');
+            recap[h.name].ok++;
+            ansState[h.id].result = 'ok';
+          }
+          renderAnsHosts();
+          await sleepAns(ANS_PAUSE_MS * 0.4);
+        }
+      }
+
+      highlightTask(null);
+      ansLog('', 'info');
+      ansLog('PLAY RECAP *********************************************************************', 'recap');
+      Object.keys(recap).forEach(name => {
+        const r = recap[name];
+        ansLog(
+          name + '  : ok=' + r.ok + '  changed=' + r.changed + '  unreachable=' + r.unreachable +
+          '  failed=' + r.failed + '  skipped=' + r.skipped,
+          r.failed ? 'failed' : (r.changed ? 'changed' : 'ok')
+        );
+      });
+
+      ansExplain.innerHTML =
+        '<h3>PLAY RECAP</h3>' +
+        '<p><span class="key">ok</span> — ønsket tilstand fantes allerede (idempotent).</p>' +
+        '<p><span class="key">changed</span> — Ansible endret noe på hosten.</p>' +
+        '<p><span class="key">failed</span> — modulen feilet. <span class="key">skipped</span> — task gjaldt ikke hosten.</p>' +
+        (check
+          ? '<p><span class="key">--check</span> kjører uten å endre systemer (dry-run) — nyttig før produksjon.</p>'
+          : '<p>Prøv <span class="key">--check</span>, bytt <span class="key">hosts:</span>, eller skru av en host i inventory.</p>');
+
+      ansBusy = false;
+      document.getElementById('ansRun').disabled = false;
+    }
+
+    function resetAnsHosts() {
+      ANS_HOSTS.forEach(h => {
+        ansState[h.id].enabled = true;
+        ansState[h.id].result = null;
+      });
+      ANS_TASKS.forEach(t => { ansTaskEnabled[t.id] = true; });
+      renderAnsInv();
+      renderAnsTasks();
+      renderAnsHosts();
+      updateAnsPreviews();
+      ansClearLog();
+      ansLog('$ klar — inventory og tasks er nullstilt.', 'info');
+      ansExplain.innerHTML =
+        '<h3>Hva er Ansible?</h3>' +
+        '<p><span class="key">Ansible</span> er agentløs automasjon: control node snakker med hoster via SSH og kjører <span class="key">moduler</span>.</p>' +
+        '<p><span class="key">Inventory</span> lister maskiner og grupper. Playbooken peker med <span class="key">hosts:</span>.</p>' +
+        '<p><span class="key">Tasks</span> er YAML-steg med resultat ok / changed / failed.</p>';
+    }
+
+    renderAnsInv();
+    renderAnsTasks();
+    renderAnsHosts();
+    updateAnsPreviews();
+    ansHostsSel.addEventListener('change', updateAnsPreviews);
+    document.getElementById('ansRun').addEventListener('click', runAnsiblePlaybook);
+    document.getElementById('ansReset').addEventListener('click', resetAnsHosts);
   </script>
 </body>
 </html>
