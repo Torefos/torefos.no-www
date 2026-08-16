@@ -1080,33 +1080,33 @@
     </section>
 
     <section class="panel" id="panel-ansible">
-      <div class="panel-header"><h2>Ansible — inventory, playbook &amp; run</h2><span class="hint">interaktiv demo · forenklet</span></div>
+      <div class="panel-header"><h2>Ansible — nettverksautomasjon · Cisco IOS-XE</h2><span class="hint">interaktiv demo · forenklet</span></div>
       <div class="panel-body">
         <div class="ans-layout">
           <div>
             <div class="ans-stage" id="ansStage">
-              <div class="ans-stage-title">Control node · inventory · playbook · task-resultater</div>
+              <div class="ans-stage-title">Control node · inventory (IOS-XE) · playbook · config-deploy</div>
 
               <div class="ans-topo">
                 <div class="ans-control" id="ansControl">
                   <div class="box">⎈</div>
                   <div class="lbl">control</div>
-                  <div class="sub">ansible-core<br>ssh · modules</div>
+                  <div class="sub">ansible-core<br>cisco.ios · network_cli</div>
                 </div>
                 <div>
-                  <div class="ans-arrow">ssh / winrm · managed nodes ← inventory</div>
+                  <div class="ans-arrow">SSH · network_cli · ansible_network_os=ios ← inventory</div>
                   <div class="ans-hosts" id="ansHosts"></div>
                 </div>
               </div>
 
               <div class="ans-cols">
                 <div class="ans-card">
-                  <h3>Inventory</h3>
+                  <h3>Inventory · switches</h3>
                   <div class="ans-inv-list" id="ansInvList"></div>
                   <div class="ans-code" id="ansInvPreview"></div>
                 </div>
                 <div class="ans-card">
-                  <h3>Playbook · tasks</h3>
+                  <h3>Playbook · tasks (IOS-XE)</h3>
                   <div class="ans-tasks" id="ansTaskList"></div>
                   <div class="ans-code" id="ansPlayPreview" style="margin-top:0.5rem;"></div>
                 </div>
@@ -1116,28 +1116,29 @@
                 <label>hosts:
                   <select id="ansHostsSel">
                     <option value="all">all</option>
-                    <option value="webservers" selected>webservers</option>
-                    <option value="databases">databases</option>
-                    <option value="web1">web1 (limit)</option>
+                    <option value="cisco_ios" selected>cisco_ios</option>
+                    <option value="core">core</option>
+                    <option value="access">access</option>
+                    <option value="access1">access1 (limit)</option>
                   </select>
                 </label>
                 <label><input type="checkbox" id="ansCheck"> --check (dry-run)</label>
-                <label><input type="checkbox" id="ansFailWeb2"> simuler feil på web2</label>
+                <label><input type="checkbox" id="ansFailAccess2"> simuler feil på access2</label>
               </div>
 
               <div class="controls">
                 <button class="btn" type="button" id="ansRun">ansible-playbook site.yml</button>
-                <button class="btn ghost" type="button" id="ansReset">Nullstill hoster</button>
+                <button class="btn ghost" type="button" id="ansReset">Nullstill switche</button>
               </div>
-              <div class="ans-term" id="ansTerm">$ klar — velg inventory-grupper og tasks, trykk playbook-knappen.</div>
+              <div class="ans-term" id="ansTerm">$ klar — velg IOS-XE-switche og tasks, trykk playbook for å «pushe» config.</div>
             </div>
           </div>
           <div class="explain" id="ansExplain">
-            <h3>Hva er Ansible?</h3>
-            <p><span class="key">Ansible</span> er agentløs automasjon: control node snakker med hoster via SSH (eller WinRM) og kjører <span class="key">moduler</span>.</p>
-            <p><span class="key">Inventory</span> lister maskiner og <em>grupper</em> (f.eks. webservers). Playbooken sier <span class="key">hosts:</span> hvilken gruppe som skal treffes.</p>
-            <p><span class="key">Playbook</span> er YAML: en liste med <span class="key">tasks</span>. Hver task kaller en modul (apt, service, copy …) og returnerer <span class="key">ok</span>, <span class="key">changed</span> eller <span class="key">failed</span>.</p>
-            <p style="margin-top:0.85rem;color:var(--text-dim);font-size:0.78rem;">Tips: bytt hosts til «databases», slå av en host i inventory, eller prøv --check. Se terminalen og host-badges.</p>
+            <h3>Nettverksautomasjon med Ansible</h3>
+            <p><span class="key">Ansible</span> snakker med Cisco IOS-XE over SSH via <span class="key">network_cli</span> — ingen agent på switchen.</p>
+            <p><span class="key">Inventory</span> lister switche, grupper (<em>core</em> / <em>access</em>) og variabler som <span class="key">ansible_network_os=ios</span>.</p>
+            <p>Playbooken deployer «kode» (CLI-linjer) med <span class="key">cisco.ios.ios_config</span> og leser tilstand med <span class="key">ios_command</span> / <span class="key">ios_facts</span>.</p>
+            <p style="margin-top:0.85rem;color:var(--text-dim);font-size:0.78rem;">Tips: kjør mot «access», prøv --check før push, eller simuler feil på access2. Se terminal og badges.</p>
           </div>
         </div>
       </div>
@@ -3051,18 +3052,106 @@
     // initial compute
     runStp(false);
 
-    /* ——— Ansible lab ——— */
+    /* ——— Ansible lab · nettverksautomasjon Cisco IOS-XE ——— */
     const ANS_HOSTS = [
-      { id: 'web1', name: 'web1', groups: ['webservers'], icon: '🌐' },
-      { id: 'web2', name: 'web2', groups: ['webservers'], icon: '🌐' },
-      { id: 'db1', name: 'db1', groups: ['databases'], icon: '🗄' }
+      { id: 'core1', name: 'core1', groups: ['cisco_ios', 'core'], icon: '▣', platform: 'C9300', mgmt: '10.0.0.1' },
+      { id: 'access1', name: 'access1', groups: ['cisco_ios', 'access'], icon: '▤', platform: 'C9200', mgmt: '10.0.0.11' },
+      { id: 'access2', name: 'access2', groups: ['cisco_ios', 'access'], icon: '▤', platform: 'C9200', mgmt: '10.0.0.12' }
     ];
+    /** lines: array of CLI strings for ios_config preview; commands for ios_command; kind: config|command|facts|save */
     const ANS_TASKS = [
-      { id: 'apt', name: 'Install nginx', module: 'ansible.builtin.apt', args: "name=nginx state=present", groups: ['webservers'] },
-      { id: 'svc', name: 'Start nginx', module: 'ansible.builtin.service', args: "name=nginx state=started enabled=true", groups: ['webservers'] },
-      { id: 'copy', name: 'Deploy index.html', module: 'ansible.builtin.copy', args: "src=index.html dest=/var/www/html/", groups: ['webservers'] },
-      { id: 'pg', name: 'Install postgresql', module: 'ansible.builtin.apt', args: "name=postgresql state=present", groups: ['databases'] },
-      { id: 'pg_svc', name: 'Start postgresql', module: 'ansible.builtin.service', args: "name=postgresql state=started", groups: ['databases'] }
+      {
+        id: 'facts',
+        name: 'Gather IOS-XE facts',
+        module: 'cisco.ios.ios_facts',
+        kind: 'facts',
+        yamlLines: ['gather_subset: min'],
+        groups: ['cisco_ios'],
+        mutates: false
+      },
+      {
+        id: 'banner',
+        name: 'Deploy banner MOTD',
+        module: 'cisco.ios.ios_config',
+        kind: 'config',
+        yamlLines: [
+          'lines:',
+          '  - banner motd ^',
+          '  - Authorized access only',
+          '  - ^'
+        ],
+        groups: ['cisco_ios'],
+        mutates: true
+      },
+      {
+        id: 'vlans',
+        name: 'Push VLANs 10/20',
+        module: 'cisco.ios.ios_vlans',
+        kind: 'config',
+        yamlLines: [
+          'config:',
+          '  - name: USERS',
+          '    vlan_id: 10',
+          '  - name: SERVERS',
+          '    vlan_id: 20',
+          'state: merged'
+        ],
+        groups: ['access'],
+        mutates: true
+      },
+      {
+        id: 'access_ports',
+        name: 'Access ports → VLAN 10',
+        module: 'cisco.ios.ios_l2_interfaces',
+        kind: 'config',
+        yamlLines: [
+          'config:',
+          '  - name: GigabitEthernet1/0/1',
+          '    mode: access',
+          '    access:',
+          '      vlan: 10',
+          'state: merged'
+        ],
+        groups: ['access'],
+        mutates: true
+      },
+      {
+        id: 'core_trunk',
+        name: 'Core uplink trunk + OSPF',
+        module: 'cisco.ios.ios_config',
+        kind: 'config',
+        yamlLines: [
+          'lines:',
+          '  - switchport mode trunk',
+          '  - switchport trunk allowed vlan 10,20,99',
+          '  - ip ospf 1 area 0',
+          'parents: interface GigabitEthernet1/0/48'
+        ],
+        groups: ['core'],
+        mutates: true
+      },
+      {
+        id: 'show',
+        name: 'Verify (show vlan / ip int br)',
+        module: 'cisco.ios.ios_command',
+        kind: 'command',
+        yamlLines: [
+          'commands:',
+          '  - show vlan brief',
+          '  - show ip interface brief'
+        ],
+        groups: ['cisco_ios'],
+        mutates: false
+      },
+      {
+        id: 'save',
+        name: 'Save running → startup',
+        module: 'cisco.ios.ios_config',
+        kind: 'save',
+        yamlLines: ['save_when: always'],
+        groups: ['cisco_ios'],
+        mutates: true
+      }
     ];
 
     const ansHostsEl = document.getElementById('ansHosts');
@@ -3074,9 +3163,8 @@
     const ansExplain = document.getElementById('ansExplain');
     const ansHostsSel = document.getElementById('ansHostsSel');
     const ansCheck = document.getElementById('ansCheck');
-    const ansFailWeb2 = document.getElementById('ansFailWeb2');
+    const ansFailAccess2 = document.getElementById('ansFailAccess2');
     let ansBusy = false;
-    /** host state: enabled in inventory, last result badge */
     const ansState = {};
     ANS_HOSTS.forEach(h => { ansState[h.id] = { enabled: true, result: null }; });
     const ansTaskEnabled = {};
@@ -3109,10 +3197,11 @@
         const badge = res && res !== 'running'
           ? '<span class="badge">' + res.toUpperCase() + '</span>'
           : (res === 'running' ? '<span class="badge">…</span>' : '<span class="badge"></span>');
+        const role = h.groups.filter(g => g !== 'cisco_ios').join(', ') || 'ios-xe';
         return '<div class="' + cls + '" id="ansHost-' + h.id + '">' +
           '<div class="box">' + h.icon + '</div>' +
           '<div class="name">' + h.name + '</div>' +
-          '<div class="groups">' + h.groups.join(', ') + '</div>' +
+          '<div class="groups">' + h.platform + ' · ' + role + '</div>' +
           badge + '</div>';
       }).join('');
     }
@@ -3121,7 +3210,8 @@
       ansInvList.innerHTML = ANS_HOSTS.map(h => {
         const st = ansState[h.id];
         return '<div class="ans-inv-row">' +
-          '<label><input type="checkbox" data-host="' + h.id + '"' + (st.enabled ? ' checked' : '') + '> ' + h.name + '</label>' +
+          '<label><input type="checkbox" data-host="' + h.id + '"' + (st.enabled ? ' checked' : '') + '> ' + h.name +
+          ' <span style="color:var(--text-dim);font-size:0.58rem">(' + h.mgmt + ')</span></label>' +
           '<span class="grp">[' + h.groups.join('] [') + ']</span></div>';
       }).join('');
       ansInvList.querySelectorAll('input[data-host]').forEach(inp => {
@@ -3138,7 +3228,8 @@
       ansTaskList.innerHTML = ANS_TASKS.map(t => {
         return '<label class="ans-task" id="ansTask-' + t.id + '">' +
           '<input type="checkbox" data-task="' + t.id + '"' + (ansTaskEnabled[t.id] ? ' checked' : '') + '>' +
-          '<span><strong>' + t.name + '</strong><span class="mod">' + t.module + '</span></span></label>';
+          '<span><strong>' + t.name + '</strong><span class="mod">' + t.module +
+          ' · ' + t.groups.join(',') + '</span></span></label>';
       }).join('');
       ansTaskList.querySelectorAll('input[data-task]').forEach(inp => {
         inp.addEventListener('change', () => {
@@ -3153,41 +3244,54 @@
     }
 
     function updateAnsPreviews() {
-      // inventory INI-style
       const byGroup = {};
+      const hostVars = [];
       ANS_HOSTS.forEach(h => {
         if (!ansState[h.id].enabled) return;
         h.groups.forEach(g => {
           if (!byGroup[g]) byGroup[g] = [];
-          byGroup[g].push(h.name);
+          if (!byGroup[g].includes(h.name)) byGroup[g].push(h.name);
         });
+        hostVars.push({ name: h.name, mgmt: h.mgmt });
       });
-      let inv = '<span class="c-cmt"># inventory.ini</span>\n';
-      Object.keys(byGroup).forEach(g => {
+
+      let inv = '<span class="c-cmt"># inventory.ini — Cisco IOS-XE</span>\n';
+      inv += '<span class="c-key">[cisco_ios:vars]</span>\n';
+      inv += 'ansible_connection=<span class="c-str">network_cli</span>\n';
+      inv += 'ansible_network_os=<span class="c-str">ios</span>\n';
+      inv += 'ansible_become=<span class="c-str">yes</span>\n';
+      inv += 'ansible_become_method=<span class="c-str">enable</span>\n\n';
+
+      ['core', 'access'].forEach(g => {
+        if (!byGroup[g] || !byGroup[g].length) return;
         inv += '<span class="c-key">[' + escHtml(g) + ']</span>\n';
-        byGroup[g].forEach(n => { inv += escHtml(n) + '\n'; });
+        byGroup[g].forEach(n => {
+          const hv = hostVars.find(x => x.name === n);
+          inv += escHtml(n) + ' ansible_host=<span class="c-str">' + escHtml(hv ? hv.mgmt : n) + '</span>\n';
+        });
         inv += '\n';
       });
-      if (!Object.keys(byGroup).length) inv += '<span class="c-cmt"># (ingen hoster valgt)</span>\n';
+      if (byGroup.cisco_ios && byGroup.cisco_ios.length) {
+        inv += '<span class="c-key">[cisco_ios:children]</span>\ncore\naccess\n';
+      }
+      if (!hostVars.length) inv += '<span class="c-cmt"># (ingen switche valgt)</span>\n';
       ansInvPreview.innerHTML = inv.trim();
 
       const hostsLine = ansHostsSel.value;
       const tasks = ANS_TASKS.filter(t => ansTaskEnabled[t.id]);
-      let pb = '<span class="c-cmt"># site.yml</span>\n';
-      pb += '- <span class="c-key">name</span>: <span class="c-str">Demo play</span>\n';
+      let pb = '<span class="c-cmt"># site.yml — deploy config til IOS-XE</span>\n';
+      pb += '- <span class="c-key">name</span>: <span class="c-str">IOS-XE network automation</span>\n';
       pb += '  <span class="c-key">hosts</span>: <span class="c-str">' + escHtml(hostsLine) + '</span>\n';
-      pb += '  <span class="c-key">become</span>: true\n';
+      pb += '  <span class="c-key">gather_facts</span>: false\n';
+      pb += '  <span class="c-key">collections</span>:\n';
+      pb += '    - <span class="c-str">cisco.ios</span>\n';
       pb += '  <span class="c-key">tasks</span>:\n';
       if (!tasks.length) pb += '    <span class="c-cmt"># (ingen tasks valgt)</span>\n';
       tasks.forEach(t => {
         pb += '    - <span class="c-key">name</span>: <span class="c-task">' + escHtml(t.name) + '</span>\n';
         pb += '      <span class="c-key">' + escHtml(t.module) + '</span>:\n';
-        // crude arg split for display
-        t.args.split(' ').forEach(a => {
-          const eq = a.indexOf('=');
-          if (eq > 0) {
-            pb += '        <span class="c-key">' + escHtml(a.slice(0, eq)) + '</span>: <span class="c-str">' + escHtml(a.slice(eq + 1)) + '</span>\n';
-          }
+        (t.yamlLines || []).forEach(line => {
+          pb += '        ' + escHtml(line) + '\n';
         });
       });
       ansPlayPreview.innerHTML = pb.trim();
@@ -3224,12 +3328,11 @@
       const targets = resolveTargetHosts();
       const tasks = ANS_TASKS.filter(t => ansTaskEnabled[t.id]);
       const check = ansCheck.checked;
-      const failWeb2 = ansFailWeb2.checked;
-      const hostsLine = ansHostsSel.value;
+      const failAccess2 = ansFailAccess2.checked;
 
       if (!targets.length) {
         ansLog('ERROR! no hosts matched the inventory / hosts pattern', 'failed');
-        ansExplain.innerHTML = '<h3>Ingen hoster</h3><p>Inventory er tom, eller <span class="key">hosts:</span> matcher ingen aktiverte maskiner. Huk av hoster eller bytt gruppe.</p>';
+        ansExplain.innerHTML = '<h3>Ingen switche</h3><p>Inventory er tom, eller <span class="key">hosts:</span> matcher ingen aktiverte IOS-XE-noder. Huk av switche eller bytt gruppe (core / access).</p>';
         ansBusy = false;
         document.getElementById('ansRun').disabled = false;
         return;
@@ -3241,7 +3344,6 @@
         return;
       }
 
-      // Mark non-targets as skip visually
       ANS_HOSTS.forEach(h => {
         const el = document.getElementById('ansHost-' + h.id);
         if (!el) return;
@@ -3250,12 +3352,14 @@
         el.classList.toggle('target', isTarget);
       });
 
-      ansLog('PLAY [Demo play] ************************************************', 'info');
+      ansLog('$ ansible-playbook -i inventory.ini site.yml' + (check ? ' --check' : '') +
+        (ansHostsSel.value !== 'all' && ansHostsSel.value !== 'cisco_ios' ? ' --limit ' + ansHostsSel.value : ''), 'info');
+      ansLog('PLAY [IOS-XE network automation] *********************************', 'info');
       ansLog('', 'info');
-      ansLog('TASK [Gathering Facts] ' + (check ? '(check mode)' : ''), 'info');
+      ansLog('TASK [Wait for connection (network_cli / SSH)]', 'info');
       await sleepAns(ANS_PAUSE_MS);
       for (const h of targets) {
-        ansLog('ok: [' + h.name + ']', 'ok');
+        ansLog('ok: [' + h.name + '] => (ansible_network_os=ios, ' + h.platform + ')', 'ok');
         await sleepAns(120);
       }
 
@@ -3278,47 +3382,51 @@
           if (!taskAppliesToHost(task, h)) {
             ansState[h.id].result = 'skipped';
             recap[h.name].skipped++;
-            ansLog('skipping: [' + h.name + ']  (host not in task groups: ' + task.groups.join(',') + ')', 'skip');
+            ansLog('skipping: [' + h.name + ']  (when: group in ' + task.groups.join(',') + ')', 'skip');
             renderAnsHosts();
             await sleepAns(ANS_PAUSE_MS * 0.5);
             continue;
           }
 
-          // Simulated failure
-          if (failWeb2 && h.id === 'web2' && task.id === 'svc') {
+          // Simulated SSH / config failure on access2 during VLAN push
+          if (failAccess2 && h.id === 'access2' && task.id === 'vlans') {
             ansState[h.id].result = 'failed';
             recap[h.name].failed++;
-            ansLog('fatal: [' + h.name + ']: FAILED! => {"msg": "Unable to start service nginx"}', 'failed');
+            ansLog('fatal: [' + h.name + ']: FAILED! => {"msg": "timeout waiting for privilege escalation / enable"}', 'failed');
             renderAnsHosts();
-            ansExplain.innerHTML = '<h3>failed</h3><p>En task returnerte feil. Uten <span class="key">ignore_errors</span> stopper playbooken for den hosten (forenklet her: vi fortsetter demoen på andre hoster).</p><p>Se <span class="key">PLAY RECAP</span> nederst i terminalen.</p>';
+            ansExplain.innerHTML = '<h3>failed på access2</h3><p>Typisk IOS-XE-feil: SSH timeout, feil enable-passord, eller AAA. Uten <span class="key">ignore_errors</span> stopper playbooken for den hosten (forenklet her: andre switche fortsetter).</p><p>Sjekk <span class="key">ansible_become_password</span> og reachability til mgmt-IP.</p>';
             await sleepAns(ANS_PAUSE_MS);
             continue;
           }
 
-          // Idempotence demo: second apt on same host often "ok" not changed — we vary by task
-          const isChange = !check && (task.id === 'apt' || task.id === 'copy' || task.id === 'pg' || task.id === 'svc' || task.id === 'pg_svc');
-          // first modules "changed", re-run feel: use a bit of determinism — apt/pg changed, service/copy ok if check
-          let status;
           if (check) {
-            status = 'ok';
-            // check mode may report would-be change
-            if (task.id === 'apt' || task.id === 'copy' || task.id === 'pg') {
-              ansLog('ok: [' + h.name + ']  (check) => would change', 'changed');
+            if (task.mutates) {
+              ansLog('ok: [' + h.name + ']  (check) => would change running-config', 'changed');
               recap[h.name].ok++;
               ansState[h.id].result = 'changed';
             } else {
-              ansLog('ok: [' + h.name + ']  (check)', 'ok');
+              ansLog('ok: [' + h.name + ']  (check)  # read-only module', 'ok');
               recap[h.name].ok++;
               ansState[h.id].result = 'ok';
             }
-          } else if (isChange && (task.id === 'apt' || task.id === 'copy' || task.id === 'pg')) {
-            status = 'changed';
-            ansLog('changed: [' + h.name + ']', 'changed');
+          } else if (task.mutates) {
+            if (task.kind === 'save') {
+              ansLog('changed: [' + h.name + '] => [OK]  (write memory / save_when)', 'changed');
+            } else if (task.kind === 'config') {
+              ansLog('changed: [' + h.name + '] => merged config into running-config', 'changed');
+            } else {
+              ansLog('changed: [' + h.name + ']', 'changed');
+            }
             recap[h.name].changed++;
             ansState[h.id].result = 'changed';
           } else {
-            status = 'ok';
-            ansLog('ok: [' + h.name + ']', 'ok');
+            if (task.kind === 'facts') {
+              ansLog('ok: [' + h.name + '] => ansible_net_version="17.09.04a", ansible_net_model="' + h.platform + '"', 'ok');
+            } else if (task.kind === 'command') {
+              ansLog('ok: [' + h.name + '] => show vlan brief / show ip interface brief', 'ok');
+            } else {
+              ansLog('ok: [' + h.name + ']', 'ok');
+            }
             recap[h.name].ok++;
             ansState[h.id].result = 'ok';
           }
@@ -3340,13 +3448,13 @@
       });
 
       ansExplain.innerHTML =
-        '<h3>PLAY RECAP</h3>' +
-        '<p><span class="key">ok</span> — ønsket tilstand fantes allerede (idempotent).</p>' +
-        '<p><span class="key">changed</span> — Ansible endret noe på hosten.</p>' +
-        '<p><span class="key">failed</span> — modulen feilet. <span class="key">skipped</span> — task gjaldt ikke hosten.</p>' +
+        '<h3>PLAY RECAP · IOS-XE</h3>' +
+        '<p><span class="key">ok</span> — facts/show matchet, eller config allerede på plass (idempotent).</p>' +
+        '<p><span class="key">changed</span> — linjer ble pushet til <em>running-config</em> (eller lagret til startup).</p>' +
+        '<p><span class="key">failed</span> — SSH/enable/modulfeil. <span class="key">skipped</span> — task bare for core eller access.</p>' +
         (check
-          ? '<p><span class="key">--check</span> kjører uten å endre systemer (dry-run) — nyttig før produksjon.</p>'
-          : '<p>Prøv <span class="key">--check</span>, bytt <span class="key">hosts:</span>, eller skru av en host i inventory.</p>');
+          ? '<p><span class="key">--check</span> er gull før produksjon: se «would change» uten å endre switchen.</p>'
+          : '<p>Prøv <span class="key">--check</span>, limit til <span class="key">access</span>, eller slå av en switch i inventory.</p>');
 
       ansBusy = false;
       document.getElementById('ansRun').disabled = false;
@@ -3363,12 +3471,12 @@
       renderAnsHosts();
       updateAnsPreviews();
       ansClearLog();
-      ansLog('$ klar — inventory og tasks er nullstilt.', 'info');
+      ansLog('$ klar — IOS-XE inventory og tasks er nullstilt. Klar for config-deploy.', 'info');
       ansExplain.innerHTML =
-        '<h3>Hva er Ansible?</h3>' +
-        '<p><span class="key">Ansible</span> er agentløs automasjon: control node snakker med hoster via SSH og kjører <span class="key">moduler</span>.</p>' +
-        '<p><span class="key">Inventory</span> lister maskiner og grupper. Playbooken peker med <span class="key">hosts:</span>.</p>' +
-        '<p><span class="key">Tasks</span> er YAML-steg med resultat ok / changed / failed.</p>';
+        '<h3>Nettverksautomasjon med Ansible</h3>' +
+        '<p><span class="key">network_cli</span> + <span class="key">cisco.ios</span> deployer CLI/config til IOS-XE uten agent.</p>' +
+        '<p><span class="key">Inventory</span> grupperer core/access. Playbooken bruker ios_config, ios_vlans, ios_command …</p>' +
+        '<p>Velg tasks og trykk <span class="key">ansible-playbook</span> for å se push mot switche.</p>';
     }
 
     renderAnsInv();
