@@ -435,38 +435,60 @@
     .stp-leg-blk::before { background: #e05555; }
 
     /* Ansible lab */
-    .ans-layout { display: grid; grid-template-columns: 1fr 300px; gap: 1.25rem; }
-    @media (max-width: 900px) { .ans-layout { grid-template-columns: 1fr; } }
-    .ans-stage { background: var(--input-bg); border: 1px solid var(--border); border-radius: 6px; padding: 1.1rem 1rem 1rem; }
-    .ans-stage-title { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.85rem; }
-    .ans-topo { display: grid; grid-template-columns: 110px 1fr; gap: 0.75rem; align-items: start; margin-bottom: 1rem; }
-    @media (max-width: 560px) { .ans-topo { grid-template-columns: 1fr; } }
+    .ans-layout {
+      display: grid; grid-template-columns: minmax(0, 1fr) minmax(220px, 280px); gap: 1.25rem;
+      max-width: 100%; min-width: 0;
+    }
+    .ans-layout > * { min-width: 0; }
+    @media (max-width: 900px) { .ans-layout { grid-template-columns: 1fr; gap: 0.85rem; } }
+    .ans-stage {
+      background: var(--input-bg); border: 1px solid var(--border); border-radius: 6px;
+      padding: 1.1rem 1rem 1rem; max-width: 100%; overflow: hidden; box-sizing: border-box;
+    }
+    .ans-stage-title {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; color: var(--text-dim);
+      text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.85rem;
+      line-height: 1.35; word-break: break-word;
+    }
+    .ans-topo {
+      display: grid; grid-template-columns: 100px minmax(0, 1fr); gap: 0.65rem;
+      align-items: start; margin-bottom: 1rem;
+    }
+    .ans-arrow {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; color: var(--text-dim);
+      margin-bottom: 0.45rem; line-height: 1.35; word-break: break-word;
+    }
     .ans-control {
-      text-align: center; padding: 0.75rem 0.5rem; background: var(--bg-elevated);
+      text-align: center; padding: 0.65rem 0.4rem; background: var(--bg-elevated);
       border: 1px solid rgba(0,212,255,0.35); border-radius: 8px;
     }
     .ans-control .box {
-      width: 56px; height: 48px; margin: 0 auto 0.4rem; border-radius: 8px;
+      width: 48px; height: 42px; margin: 0 auto 0.35rem; border-radius: 8px;
       background: linear-gradient(180deg, #1a2332, #121820); border: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: center; font-size: 1.35rem;
+      display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
     }
-    .ans-control .lbl { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--accent); font-weight: 600; }
-    .ans-control .sub { font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; color: var(--text-dim); margin-top: 0.15rem; }
-    .ans-hosts { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: flex-start; }
+    .ans-control .lbl { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--accent); font-weight: 600; }
+    .ans-control .sub { font-family: 'JetBrains Mono', monospace; font-size: 0.55rem; color: var(--text-dim); margin-top: 0.15rem; line-height: 1.3; }
+    .ans-hosts { display: flex; flex-wrap: wrap; gap: 0.4rem; justify-content: flex-start; }
     .ans-host {
-      width: 100px; text-align: center; padding: 0.55rem 0.4rem; border-radius: 8px;
-      background: var(--bg-elevated); border: 1px solid var(--border); transition: border-color 0.2s, box-shadow 0.2s, opacity 0.2s;
+      flex: 1 1 88px; max-width: 120px; min-width: 0; text-align: center;
+      padding: 0.45rem 0.3rem; border-radius: 8px; box-sizing: border-box;
+      background: var(--bg-elevated); border: 1px solid var(--border);
+      transition: border-color 0.2s, box-shadow 0.2s, opacity 0.2s;
     }
     .ans-host .box {
-      width: 48px; height: 40px; margin: 0 auto 0.35rem; border-radius: 6px;
+      width: 42px; height: 36px; margin: 0 auto 0.3rem; border-radius: 6px;
       background: var(--input-bg); border: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+      display: flex; align-items: center; justify-content: center; font-size: 1rem;
     }
-    .ans-host .name { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--text); font-weight: 500; }
-    .ans-host .groups { font-family: 'JetBrains Mono', monospace; font-size: 0.55rem; color: var(--text-dim); margin-top: 0.15rem; min-height: 1.4em; }
+    .ans-host .name { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--text); font-weight: 500; }
+    .ans-host .groups {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.52rem; color: var(--text-dim);
+      margin-top: 0.12rem; min-height: 1.3em; line-height: 1.25; word-break: break-word;
+    }
     .ans-host .badge {
-      margin-top: 0.35rem; font-family: 'JetBrains Mono', monospace; font-size: 0.55rem;
-      padding: 0.12rem 0.35rem; border-radius: 3px; display: inline-block; min-height: 1.1em;
+      margin-top: 0.3rem; font-family: 'JetBrains Mono', monospace; font-size: 0.52rem;
+      padding: 0.1rem 0.3rem; border-radius: 3px; display: inline-block; min-height: 1.05em;
     }
     .ans-host.target { border-color: rgba(0,212,255,0.45); box-shadow: 0 0 12px rgba(0,212,255,0.12); }
     .ans-host.skip { opacity: 0.4; }
@@ -475,66 +497,107 @@
     .ans-host.changed .badge { color: var(--vlan30); background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.35); }
     .ans-host.failed .badge { color: #e05555; background: rgba(224,85,85,0.12); border: 1px solid rgba(224,85,85,0.35); }
     .ans-host.skipped .badge { color: var(--text-dim); background: rgba(90,106,126,0.15); border: 1px solid var(--border); }
-    .ans-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem; }
-    @media (max-width: 640px) { .ans-cols { grid-template-columns: 1fr; } }
+    .ans-cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0.65rem; margin-bottom: 0.75rem; }
     .ans-card {
-      background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 6px; padding: 0.7rem 0.75rem;
+      background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 6px;
+      padding: 0.65rem 0.7rem; min-width: 0; overflow: hidden;
     }
     .ans-card h3 {
-      font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--accent);
+      font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--accent);
       text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.5rem;
     }
     .ans-code {
-      font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; line-height: 1.55;
+      font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; line-height: 1.5;
       background: #080b10; border: 1px solid var(--border); border-radius: 4px;
-      padding: 0.55rem 0.65rem; color: var(--text-muted); overflow-x: auto; white-space: pre;
-      max-height: 200px; overflow-y: auto;
+      padding: 0.5rem 0.55rem; color: var(--text-muted);
+      overflow-x: auto; white-space: pre; max-height: 180px; overflow-y: auto;
+      -webkit-overflow-scrolling: touch; max-width: 100%;
     }
     .ans-code .c-key { color: var(--accent); }
     .ans-code .c-str { color: var(--success); }
     .ans-code .c-cmt { color: var(--text-dim); }
     .ans-code .c-task { color: var(--vlan30); }
     .ans-code .c-hi { background: rgba(0,212,255,0.12); border-radius: 2px; }
-    .ans-inv-list { display: flex; flex-direction: column; gap: 0.35rem; margin-bottom: 0.5rem; }
+    .ans-inv-list { display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 0.5rem; }
     .ans-inv-row {
-      display: grid; grid-template-columns: 1fr auto; gap: 0.4rem; align-items: center;
-      font-family: 'JetBrains Mono', monospace; font-size: 0.68rem;
+      display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.35rem; align-items: center;
+      font-family: 'JetBrains Mono', monospace; font-size: 0.62rem;
     }
-    .ans-inv-row label { display: flex; align-items: center; gap: 0.4rem; color: var(--text-muted); cursor: pointer; }
-    .ans-inv-row input[type=checkbox] { accent-color: var(--accent); width: 14px; height: 14px; cursor: pointer; }
-    .ans-inv-row .grp { color: var(--text-dim); font-size: 0.58rem; }
-    .ans-tasks { display: flex; flex-direction: column; gap: 0.35rem; }
+    .ans-inv-row label {
+      display: flex; align-items: center; gap: 0.35rem; color: var(--text-muted);
+      cursor: pointer; min-width: 0; flex-wrap: wrap;
+    }
+    .ans-inv-row input[type=checkbox] { accent-color: var(--accent); width: 14px; height: 14px; cursor: pointer; flex-shrink: 0; }
+    .ans-inv-row .grp { color: var(--text-dim); font-size: 0.52rem; white-space: nowrap; }
+    .ans-tasks { display: flex; flex-direction: column; gap: 0.3rem; }
     .ans-task {
-      display: flex; align-items: flex-start; gap: 0.45rem; padding: 0.4rem 0.5rem;
+      display: flex; align-items: flex-start; gap: 0.4rem; padding: 0.35rem 0.45rem;
       border: 1px solid var(--border); border-radius: 4px; background: var(--input-bg);
-      font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; color: var(--text-muted);
+      min-width: 0;
     }
+    .ans-task > span { min-width: 0; overflow-wrap: anywhere; }
     .ans-task input { accent-color: var(--accent); margin-top: 0.1rem; flex-shrink: 0; }
     .ans-task.active { border-color: var(--accent); color: var(--accent); background: rgba(0,212,255,0.06); }
-    .ans-task .mod { color: var(--vlan20); font-size: 0.58rem; display: block; margin-top: 0.15rem; }
-    .ans-run-opts { display: flex; flex-wrap: wrap; gap: 0.65rem 1rem; margin: 0.65rem 0; align-items: center; }
+    .ans-task .mod { color: var(--vlan20); font-size: 0.52rem; display: block; margin-top: 0.12rem; line-height: 1.3; }
+    .ans-run-opts {
+      display: flex; flex-wrap: wrap; gap: 0.5rem 0.75rem; margin: 0.6rem 0; align-items: center;
+    }
     .ans-run-opts label {
-      font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--text-muted);
-      display: flex; align-items: center; gap: 0.35rem; cursor: pointer;
+      font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; color: var(--text-muted);
+      display: flex; align-items: center; gap: 0.3rem; cursor: pointer; max-width: 100%;
     }
     .ans-run-opts select, .ans-run-opts input[type=text] {
       background: var(--input-bg); border: 1px solid var(--border); border-radius: 4px;
-      color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 0.72rem;
-      padding: 0.3rem 0.45rem; outline: none;
+      color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 0.68rem;
+      padding: 0.28rem 0.4rem; outline: none; max-width: 100%;
     }
     .ans-run-opts select:focus, .ans-run-opts input[type=text]:focus { border-color: var(--accent); }
     .ans-term {
-      font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; line-height: 1.5;
+      font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; line-height: 1.45;
       background: #080b10; border: 1px solid var(--border); border-radius: 4px;
-      padding: 0.6rem 0.75rem; max-height: 160px; overflow-y: auto; color: var(--text-dim);
-      min-height: 5rem;
+      padding: 0.5rem 0.6rem; max-height: 150px; overflow: auto; color: var(--text-dim);
+      min-height: 4.5rem; -webkit-overflow-scrolling: touch; max-width: 100%;
+      word-break: break-word; overflow-wrap: anywhere;
     }
     .ans-term .ok { color: var(--success); }
     .ans-term .changed { color: var(--vlan30); }
     .ans-term .failed { color: #e05555; }
     .ans-term .skip { color: var(--text-dim); }
     .ans-term .info { color: var(--accent); }
-    .ans-term .recap { color: var(--text); margin-top: 0.35rem; }
+    .ans-term .recap {
+      color: var(--text); margin-top: 0.3rem; font-size: 0.55rem; line-height: 1.4;
+      letter-spacing: -0.01em;
+    }
+    #panel-ansible .explain { font-size: 0.78rem; }
+    #panel-ansible .explain h3 { font-size: 0.7rem; }
+    #panel-ansible .explain p { font-size: 0.76rem; line-height: 1.45; }
+    #panel-ansible .explain .key { font-size: 0.7rem; padding: 0.1rem 0.32rem; }
+    #panel-ansible .panel-header h2 { font-size: clamp(0.78rem, 3.5vw, 0.95rem); }
+    #panel-ansible .controls { flex-wrap: wrap; gap: 0.45rem; }
+    @media (max-width: 640px) {
+      .ans-cols { grid-template-columns: 1fr; }
+      .ans-topo { grid-template-columns: 1fr; justify-items: stretch; }
+      .ans-control { display: flex; align-items: center; gap: 0.65rem; text-align: left; padding: 0.5rem 0.65rem; }
+      .ans-control .box { margin: 0; flex-shrink: 0; }
+      .ans-hosts { justify-content: stretch; }
+      .ans-host { flex: 1 1 calc(33.33% - 0.35rem); max-width: none; }
+      .ans-stage { padding: 0.75rem 0.65rem 0.7rem; }
+      .ans-code { font-size: 0.55rem; max-height: 140px; }
+      .ans-inv-row { grid-template-columns: 1fr; gap: 0.15rem; }
+      .ans-inv-row .grp { white-space: normal; }
+      .ans-term { font-size: 0.54rem; max-height: 130px; }
+      .ans-term .recap { font-size: 0.5rem; }
+      #panel-ansible .panel-body { padding: 0.75rem; }
+      #panel-ansible .explain { font-size: 0.72rem; padding: 0.75rem; }
+      #panel-ansible .explain h3 { font-size: 0.65rem; }
+      #panel-ansible .explain p { font-size: 0.7rem; }
+    }
+    @media (max-width: 400px) {
+      .ans-host { flex: 1 1 100%; }
+      .ans-run-opts label { width: 100%; }
+      .ans-run-opts select { flex: 1; min-width: 0; }
+    }
     .ans-arrow {
       font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; color: var(--text-dim);
       text-align: center; margin: 0.25rem 0 0.5rem;
@@ -1080,18 +1143,20 @@
     </section>
 
     <section class="panel" id="panel-ansible">
-      <div class="panel-header"><h2>Ansible — nettverksautomasjon · Cisco IOS-XE</h2><span class="hint">interaktiv demo · forenklet</span></div>
+      <div class="panel-header"><h2>Ansible — nettverksautomasjon · Cisco IOS-XE</h2><span class="hint">healthcare lab · forenklet</span></div>
       <div class="panel-body">
         <div class="ans-layout">
           <div>
             <div class="ans-stage" id="ansStage">
-              <div class="ans-stage-title">Control node · inventory (IOS-XE) · playbook · config-deploy</div>
+              <div class="ans-stage-title">Scenario: C1 + sw01/sw02 · VLAN 10/20/820 · healthcare ACL · save</div>
 
               <div class="ans-topo">
                 <div class="ans-control" id="ansControl">
                   <div class="box">⎈</div>
-                  <div class="lbl">control</div>
-                  <div class="sub">ansible-core<br>cisco.ios · network_cli</div>
+                  <div>
+                    <div class="lbl">control</div>
+                    <div class="sub">ansible-core<br>cisco.ios · network_cli</div>
+                  </div>
                 </div>
                 <div>
                   <div class="ans-arrow">SSH · network_cli · ansible_network_os=ios ← inventory</div>
@@ -1106,7 +1171,7 @@
                   <div class="ans-code" id="ansInvPreview"></div>
                 </div>
                 <div class="ans-card">
-                  <h3>Playbook · tasks (IOS-XE)</h3>
+                  <h3>Playbook · healthcare deploy</h3>
                   <div class="ans-tasks" id="ansTaskList"></div>
                   <div class="ans-code" id="ansPlayPreview" style="margin-top:0.5rem;"></div>
                 </div>
@@ -1119,26 +1184,25 @@
                     <option value="cisco_ios" selected>cisco_ios</option>
                     <option value="core">core</option>
                     <option value="access">access</option>
-                    <option value="access1">access1 (limit)</option>
+                    <option value="sw01">sw01 (limit)</option>
                   </select>
                 </label>
                 <label><input type="checkbox" id="ansCheck"> --check (dry-run)</label>
-                <label><input type="checkbox" id="ansFailAccess2"> simuler feil på access2</label>
+                <label><input type="checkbox" id="ansFailSw02"> simuler feil på sw02</label>
               </div>
 
               <div class="controls">
                 <button class="btn" type="button" id="ansRun">ansible-playbook site.yml</button>
                 <button class="btn ghost" type="button" id="ansReset">Nullstill switche</button>
               </div>
-              <div class="ans-term" id="ansTerm">$ klar — velg IOS-XE-switche og tasks, trykk playbook for å «pushe» config.</div>
+              <div class="ans-term" id="ansTerm">$ klar — healthcare-scenario: facts → banner → VLANs → ports → ACL → verify → save.</div>
             </div>
           </div>
           <div class="explain" id="ansExplain">
-            <h3>Nettverksautomasjon med Ansible</h3>
-            <p><span class="key">Ansible</span> snakker med Cisco IOS-XE over SSH via <span class="key">network_cli</span> — ingen agent på switchen.</p>
-            <p><span class="key">Inventory</span> lister switche, grupper (<em>core</em> / <em>access</em>) og variabler som <span class="key">ansible_network_os=ios</span>.</p>
-            <p>Playbooken deployer «kode» (CLI-linjer) med <span class="key">cisco.ios.ios_config</span> og leser tilstand med <span class="key">ios_command</span> / <span class="key">ios_facts</span>.</p>
-            <p style="margin-top:0.85rem;color:var(--text-dim);font-size:0.78rem;">Tips: kjør mot «access», prøv --check før push, eller simuler feil på access2. Se terminal og badges.</p>
+            <h3>Healthcare-lab · IOS-XE</h3>
+            <p><span class="key">C1</span> (core) + <span class="key">sw01/sw02</span> (access). Ansible pusher config via <span class="key">network_cli</span>.</p>
+            <p>Scenario: facts → banner → VLAN <span class="key">10/20/820</span> (healthcare) → access ports → <span class="key">ACL</span> for healthcare → verify → save.</p>
+            <p style="margin-top:0.7rem;color:var(--text-dim);font-size:0.72rem;">Tips: --check før push, limit sw01, eller simuler feil på sw02.</p>
           </div>
         </div>
       </div>
@@ -3052,17 +3116,17 @@
     // initial compute
     runStp(false);
 
-    /* ——— Ansible lab · nettverksautomasjon Cisco IOS-XE ——— */
+    /* ——— Ansible lab · healthcare IOS-XE (C1 / sw01 / sw02) ——— */
     const ANS_HOSTS = [
-      { id: 'core1', name: 'core1', groups: ['cisco_ios', 'core'], icon: '▣', platform: 'C9300', mgmt: '10.0.0.1' },
-      { id: 'access1', name: 'access1', groups: ['cisco_ios', 'access'], icon: '▤', platform: 'C9200', mgmt: '10.0.0.11' },
-      { id: 'access2', name: 'access2', groups: ['cisco_ios', 'access'], icon: '▤', platform: 'C9200', mgmt: '10.0.0.12' }
+      { id: 'c1', name: 'C1', groups: ['cisco_ios', 'core'], icon: '▣', platform: 'C9300', mgmt: '10.0.0.1' },
+      { id: 'sw01', name: 'sw01', groups: ['cisco_ios', 'access'], icon: '▤', platform: 'C9200', mgmt: '10.0.0.11' },
+      { id: 'sw02', name: 'sw02', groups: ['cisco_ios', 'access'], icon: '▤', platform: 'C9200', mgmt: '10.0.0.12' }
     ];
-    /** lines: array of CLI strings for ios_config preview; commands for ios_command; kind: config|command|facts|save */
+    /** kind: config|command|facts|save|acl */
     const ANS_TASKS = [
       {
         id: 'facts',
-        name: 'Gather IOS-XE facts',
+        name: 'Gather facts',
         module: 'cisco.ios.ios_facts',
         kind: 'facts',
         yamlLines: ['gather_subset: min'],
@@ -3071,13 +3135,13 @@
       },
       {
         id: 'banner',
-        name: 'Deploy banner MOTD',
+        name: 'Deploy banner',
         module: 'cisco.ios.ios_config',
         kind: 'config',
         yamlLines: [
           'lines:',
           '  - banner motd ^',
-          '  - Authorized access only',
+          '  - Healthcare campus — authorized only',
           '  - ^'
         ],
         groups: ['cisco_ios'],
@@ -3085,7 +3149,7 @@
       },
       {
         id: 'vlans',
-        name: 'Push VLANs 10/20',
+        name: 'Push VLANs 10/20/820',
         module: 'cisco.ios.ios_vlans',
         kind: 'config',
         yamlLines: [
@@ -3094,6 +3158,8 @@
           '    vlan_id: 10',
           '  - name: SERVERS',
           '    vlan_id: 20',
+          '  - name: HEALTHCARE',
+          '    vlan_id: 820',
           'state: merged'
         ],
         groups: ['access'],
@@ -3101,7 +3167,7 @@
       },
       {
         id: 'access_ports',
-        name: 'Access ports → VLAN 10',
+        name: 'Access ports',
         module: 'cisco.ios.ios_l2_interfaces',
         kind: 'config',
         yamlLines: [
@@ -3110,34 +3176,56 @@
           '    mode: access',
           '    access:',
           '      vlan: 10',
+          '  - name: GigabitEthernet1/0/10',
+          '    mode: access',
+          '    access:',
+          '      vlan: 820',
           'state: merged'
         ],
         groups: ['access'],
         mutates: true
       },
       {
-        id: 'core_trunk',
-        name: 'Core uplink trunk + OSPF',
-        module: 'cisco.ios.ios_config',
-        kind: 'config',
+        id: 'acl',
+        name: 'ACL · Healthcare systems',
+        module: 'cisco.ios.ios_acls',
+        kind: 'acl',
         yamlLines: [
-          'lines:',
-          '  - switchport mode trunk',
-          '  - switchport trunk allowed vlan 10,20,99',
-          '  - ip ospf 1 area 0',
-          'parents: interface GigabitEthernet1/0/48'
+          'config:',
+          '  - afi: ipv4',
+          '    acls:',
+          '      - name: HEALTHCARE_ACL',
+          '        acl_type: extended',
+          '        aces:',
+          '          - grant: permit',
+          '            protocol: tcp',
+          '            source:',
+          '              address: 10.82.0.0',
+          '              wildcard_bits: 0.0.255.255',
+          '            destination:',
+          '              host: 10.20.0.50',
+          '            destination_port_protocol:',
+          '              eq: 443',
+          '          - grant: deny',
+          '            protocol: ip',
+          '            source: any',
+          '            destination:',
+          '              address: 10.82.0.0',
+          '              wildcard_bits: 0.0.255.255',
+          'state: merged'
         ],
         groups: ['core'],
         mutates: true
       },
       {
         id: 'show',
-        name: 'Verify (show vlan / ip int br)',
+        name: 'Verify',
         module: 'cisco.ios.ios_command',
         kind: 'command',
         yamlLines: [
           'commands:',
           '  - show vlan brief',
+          '  - show access-lists HEALTHCARE_ACL',
           '  - show ip interface brief'
         ],
         groups: ['cisco_ios'],
@@ -3145,7 +3233,7 @@
       },
       {
         id: 'save',
-        name: 'Save running → startup',
+        name: 'Save config',
         module: 'cisco.ios.ios_config',
         kind: 'save',
         yamlLines: ['save_when: always'],
@@ -3163,15 +3251,15 @@
     const ansExplain = document.getElementById('ansExplain');
     const ansHostsSel = document.getElementById('ansHostsSel');
     const ansCheck = document.getElementById('ansCheck');
-    const ansFailAccess2 = document.getElementById('ansFailAccess2');
+    const ansFailSw02 = document.getElementById('ansFailSw02');
     let ansBusy = false;
     const ansState = {};
     ANS_HOSTS.forEach(h => { ansState[h.id] = { enabled: true, result: null }; });
     const ansTaskEnabled = {};
     ANS_TASKS.forEach(t => { ansTaskEnabled[t.id] = true; });
 
-    const ANS_STEP_MS = 700;
-    const ANS_PAUSE_MS = 350;
+    const ANS_STEP_MS = 650;
+    const ANS_PAUSE_MS = 320;
     function sleepAns(ms) { return new Promise(r => setTimeout(r, ms)); }
 
     function ansLog(msg, cls) {
@@ -3211,7 +3299,7 @@
         const st = ansState[h.id];
         return '<div class="ans-inv-row">' +
           '<label><input type="checkbox" data-host="' + h.id + '"' + (st.enabled ? ' checked' : '') + '> ' + h.name +
-          ' <span style="color:var(--text-dim);font-size:0.58rem">(' + h.mgmt + ')</span></label>' +
+          ' <span style="color:var(--text-dim);font-size:0.52rem">(' + h.mgmt + ')</span></label>' +
           '<span class="grp">[' + h.groups.join('] [') + ']</span></div>';
       }).join('');
       ansInvList.querySelectorAll('input[data-host]').forEach(inp => {
@@ -3255,7 +3343,7 @@
         hostVars.push({ name: h.name, mgmt: h.mgmt });
       });
 
-      let inv = '<span class="c-cmt"># inventory.ini — Cisco IOS-XE</span>\n';
+      let inv = '<span class="c-cmt"># inventory.ini — healthcare campus</span>\n';
       inv += '<span class="c-key">[cisco_ios:vars]</span>\n';
       inv += 'ansible_connection=<span class="c-str">network_cli</span>\n';
       inv += 'ansible_network_os=<span class="c-str">ios</span>\n';
@@ -3279,8 +3367,8 @@
 
       const hostsLine = ansHostsSel.value;
       const tasks = ANS_TASKS.filter(t => ansTaskEnabled[t.id]);
-      let pb = '<span class="c-cmt"># site.yml — deploy config til IOS-XE</span>\n';
-      pb += '- <span class="c-key">name</span>: <span class="c-str">IOS-XE network automation</span>\n';
+      let pb = '<span class="c-cmt"># site.yml — healthcare deploy</span>\n';
+      pb += '- <span class="c-key">name</span>: <span class="c-str">Healthcare IOS-XE deploy</span>\n';
       pb += '  <span class="c-key">hosts</span>: <span class="c-str">' + escHtml(hostsLine) + '</span>\n';
       pb += '  <span class="c-key">gather_facts</span>: false\n';
       pb += '  <span class="c-key">collections</span>:\n';
@@ -3328,11 +3416,11 @@
       const targets = resolveTargetHosts();
       const tasks = ANS_TASKS.filter(t => ansTaskEnabled[t.id]);
       const check = ansCheck.checked;
-      const failAccess2 = ansFailAccess2.checked;
+      const failSw02 = ansFailSw02.checked;
 
       if (!targets.length) {
-        ansLog('ERROR! no hosts matched the inventory / hosts pattern', 'failed');
-        ansExplain.innerHTML = '<h3>Ingen switche</h3><p>Inventory er tom, eller <span class="key">hosts:</span> matcher ingen aktiverte IOS-XE-noder. Huk av switche eller bytt gruppe (core / access).</p>';
+        ansLog('ERROR! no hosts matched inventory / hosts', 'failed');
+        ansExplain.innerHTML = '<h3>Ingen switche</h3><p>Huk av <span class="key">C1</span> / <span class="key">sw01</span> / <span class="key">sw02</span>, eller bytt hosts-gruppe.</p>';
         ansBusy = false;
         document.getElementById('ansRun').disabled = false;
         return;
@@ -3352,15 +3440,15 @@
         el.classList.toggle('target', isTarget);
       });
 
-      ansLog('$ ansible-playbook -i inventory.ini site.yml' + (check ? ' --check' : '') +
-        (ansHostsSel.value !== 'all' && ansHostsSel.value !== 'cisco_ios' ? ' --limit ' + ansHostsSel.value : ''), 'info');
-      ansLog('PLAY [IOS-XE network automation] *********************************', 'info');
-      ansLog('', 'info');
-      ansLog('TASK [Wait for connection (network_cli / SSH)]', 'info');
+      const limitHint = (ansHostsSel.value !== 'all' && ansHostsSel.value !== 'cisco_ios')
+        ? ' --limit ' + ansHostsSel.value : '';
+      ansLog('$ ansible-playbook -i inventory.ini site.yml' + (check ? ' --check' : '') + limitHint, 'info');
+      ansLog('PLAY [Healthcare IOS-XE deploy] ************************', 'info');
+      ansLog('TASK [Wait for connection (network_cli)]', 'info');
       await sleepAns(ANS_PAUSE_MS);
       for (const h of targets) {
-        ansLog('ok: [' + h.name + '] => (ansible_network_os=ios, ' + h.platform + ')', 'ok');
-        await sleepAns(120);
+        ansLog('ok: [' + h.name + ']  ios / ' + h.platform, 'ok');
+        await sleepAns(100);
       }
 
       const recap = {};
@@ -3368,62 +3456,64 @@
 
       for (const task of tasks) {
         highlightTask(task.id);
-        ansLog('', 'info');
-        ansLog('TASK [' + task.name + '] *******' + (check ? '  check_mode=true' : ''), 'info');
+        ansLog('TASK [' + task.name + ']' + (check ? '  (check)' : ''), 'info');
         await sleepAns(ANS_PAUSE_MS);
 
         for (const h of targets) {
           ansState[h.id].result = 'running';
           renderAnsHosts();
           document.getElementById('ansHost-' + h.id)?.classList.add('target');
-
           await sleepAns(ANS_STEP_MS);
 
           if (!taskAppliesToHost(task, h)) {
             ansState[h.id].result = 'skipped';
             recap[h.name].skipped++;
-            ansLog('skipping: [' + h.name + ']  (when: group in ' + task.groups.join(',') + ')', 'skip');
+            ansLog('skipping: [' + h.name + ']  (' + task.groups.join(',') + ')', 'skip');
             renderAnsHosts();
-            await sleepAns(ANS_PAUSE_MS * 0.5);
+            await sleepAns(ANS_PAUSE_MS * 0.45);
             continue;
           }
 
-          // Simulated SSH / config failure on access2 during VLAN push
-          if (failAccess2 && h.id === 'access2' && task.id === 'vlans') {
+          // Simulated failure on sw02 during VLAN push
+          if (failSw02 && h.id === 'sw02' && task.id === 'vlans') {
             ansState[h.id].result = 'failed';
             recap[h.name].failed++;
-            ansLog('fatal: [' + h.name + ']: FAILED! => {"msg": "timeout waiting for privilege escalation / enable"}', 'failed');
+            ansLog('fatal: [' + h.name + ']: FAILED! enable/SSH timeout', 'failed');
             renderAnsHosts();
-            ansExplain.innerHTML = '<h3>failed på access2</h3><p>Typisk IOS-XE-feil: SSH timeout, feil enable-passord, eller AAA. Uten <span class="key">ignore_errors</span> stopper playbooken for den hosten (forenklet her: andre switche fortsetter).</p><p>Sjekk <span class="key">ansible_become_password</span> og reachability til mgmt-IP.</p>';
+            ansExplain.innerHTML = '<h3>failed på sw02</h3><p>Typisk: SSH timeout, feil enable, eller AAA. Sjekk <span class="key">ansible_become_password</span> og mgmt-IP.</p>';
             await sleepAns(ANS_PAUSE_MS);
             continue;
           }
 
           if (check) {
             if (task.mutates) {
-              ansLog('ok: [' + h.name + ']  (check) => would change running-config', 'changed');
+              ansLog('ok: [' + h.name + ']  (check) would change', 'changed');
               recap[h.name].ok++;
               ansState[h.id].result = 'changed';
             } else {
-              ansLog('ok: [' + h.name + ']  (check)  # read-only module', 'ok');
+              ansLog('ok: [' + h.name + ']  (check)', 'ok');
               recap[h.name].ok++;
               ansState[h.id].result = 'ok';
             }
           } else if (task.mutates) {
             if (task.kind === 'save') {
-              ansLog('changed: [' + h.name + '] => [OK]  (write memory / save_when)', 'changed');
-            } else if (task.kind === 'config') {
-              ansLog('changed: [' + h.name + '] => merged config into running-config', 'changed');
+              ansLog('changed: [' + h.name + ']  write mem', 'changed');
+            } else if (task.kind === 'acl') {
+              ansLog('changed: [' + h.name + ']  HEALTHCARE_ACL merged', 'changed');
+            } else if (task.id === 'vlans') {
+              ansLog('changed: [' + h.name + ']  VLAN 10/20/820', 'changed');
+            } else if (task.id === 'access_ports') {
+              ansLog('changed: [' + h.name + ']  Gi1/0/1→10, Gi1/0/10→820', 'changed');
             } else {
-              ansLog('changed: [' + h.name + ']', 'changed');
+              ansLog('changed: [' + h.name + ']  running-config', 'changed');
             }
             recap[h.name].changed++;
             ansState[h.id].result = 'changed';
           } else {
             if (task.kind === 'facts') {
-              ansLog('ok: [' + h.name + '] => ansible_net_version="17.09.04a", ansible_net_model="' + h.platform + '"', 'ok');
+              ansLog('ok: [' + h.name + ']  17.09 · ' + h.platform, 'ok');
             } else if (task.kind === 'command') {
-              ansLog('ok: [' + h.name + '] => show vlan brief / show ip interface brief', 'ok');
+              ansLog('ok: [' + h.name + ']  vlan/acl/int verified', 'ok');
             } else {
               ansLog('ok: [' + h.name + ']', 'ok');
             }
@@ -3431,30 +3521,29 @@
             ansState[h.id].result = 'ok';
           }
           renderAnsHosts();
-          await sleepAns(ANS_PAUSE_MS * 0.4);
+          await sleepAns(ANS_PAUSE_MS * 0.35);
         }
       }
 
       highlightTask(null);
-      ansLog('', 'info');
-      ansLog('PLAY RECAP *********************************************************************', 'recap');
+      ansLog('PLAY RECAP', 'recap');
       Object.keys(recap).forEach(name => {
         const r = recap[name];
         ansLog(
-          name + '  : ok=' + r.ok + '  changed=' + r.changed + '  unreachable=' + r.unreachable +
-          '  failed=' + r.failed + '  skipped=' + r.skipped,
+          name + ': ok=' + r.ok + ' ch=' + r.changed +
+          ' fail=' + r.failed + ' skip=' + r.skipped,
           r.failed ? 'failed' : (r.changed ? 'changed' : 'ok')
         );
       });
 
       ansExplain.innerHTML =
-        '<h3>PLAY RECAP · IOS-XE</h3>' +
-        '<p><span class="key">ok</span> — facts/show matchet, eller config allerede på plass (idempotent).</p>' +
-        '<p><span class="key">changed</span> — linjer ble pushet til <em>running-config</em> (eller lagret til startup).</p>' +
-        '<p><span class="key">failed</span> — SSH/enable/modulfeil. <span class="key">skipped</span> — task bare for core eller access.</p>' +
+        '<h3>PLAY RECAP</h3>' +
+        '<p><span class="key">ok</span> — facts/verify, eller config allerede lik (idempotent).</p>' +
+        '<p><span class="key">changed</span> — pushet til running-config (VLAN/ports/ACL/save).</p>' +
+        '<p><span class="key">skipped</span> — f.eks. ACL bare på core (C1), VLANs på access.</p>' +
         (check
-          ? '<p><span class="key">--check</span> er gull før produksjon: se «would change» uten å endre switchen.</p>'
-          : '<p>Prøv <span class="key">--check</span>, limit til <span class="key">access</span>, eller slå av en switch i inventory.</p>');
+          ? '<p><span class="key">--check</span>: se would-change uten å endre switchen.</p>'
+          : '<p>Prøv <span class="key">--check</span>, limit <span class="key">sw01</span>, eller feil på sw02.</p>');
 
       ansBusy = false;
       document.getElementById('ansRun').disabled = false;
@@ -3471,12 +3560,11 @@
       renderAnsHosts();
       updateAnsPreviews();
       ansClearLog();
-      ansLog('$ klar — IOS-XE inventory og tasks er nullstilt. Klar for config-deploy.', 'info');
+      ansLog('$ klar — C1/sw01/sw02 nullstilt. Healthcare-scenario klart.', 'info');
       ansExplain.innerHTML =
-        '<h3>Nettverksautomasjon med Ansible</h3>' +
-        '<p><span class="key">network_cli</span> + <span class="key">cisco.ios</span> deployer CLI/config til IOS-XE uten agent.</p>' +
-        '<p><span class="key">Inventory</span> grupperer core/access. Playbooken bruker ios_config, ios_vlans, ios_command …</p>' +
-        '<p>Velg tasks og trykk <span class="key">ansible-playbook</span> for å se push mot switche.</p>';
+        '<h3>Healthcare-lab · IOS-XE</h3>' +
+        '<p><span class="key">C1</span> + <span class="key">sw01/sw02</span>. facts → banner → VLAN 10/20/820 → ports → ACL → verify → save.</p>' +
+        '<p>ACL for healthcare ligger på core; VLAN/ports på access.</p>';
     }
 
     renderAnsInv();
